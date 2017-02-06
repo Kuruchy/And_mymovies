@@ -26,12 +26,15 @@ package com.kuruchy.android.and_mymovies;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -45,7 +48,8 @@ import java.net.URL;
 public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterOnClickHandler{
 
     private RecyclerView mRecyclerView;
-    private MovieAdapter mMovieAdapter;
+    private static MovieAdapter mMovieAdapter;
+    private int NUMBER_OF_COLUMNS = 4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,10 +61,14 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_movie);
 
-        LinearLayoutManager layoutManager
-                = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+            NUMBER_OF_COLUMNS = 6;
+        }
 
-        mRecyclerView.setLayoutManager(layoutManager);
+        GridLayoutManager gridLayoutManager
+                = new GridLayoutManager(this, NUMBER_OF_COLUMNS);
+
+        mRecyclerView.setLayoutManager(gridLayoutManager);
 
         mRecyclerView.setHasFixedSize(true);
 
@@ -88,46 +96,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         Intent intentToStartDetailActivity = new Intent(context, destinationClass);
         intentToStartDetailActivity.putExtra("movie_obj", (Parcelable) movie);
         startActivity(intentToStartDetailActivity);
-    }
-
-    /**
-     * Fetch Movie Data Class.
-     *
-     * Extends from AsyncTask. Allowing to run a the movie list update on a background thread,
-     * while publishing the results to the UI thread.
-     */
-    public class FetchMovieData extends AsyncTask<String, Void, Movie[]> {
-
-        @Override
-        protected Movie[] doInBackground(String... params) {
-
-            if (params.length == 0) {
-                return null;
-            }
-
-            URL movieRequestURL = TheMovieDatabaseNetworkUtils.buildUrl(params[0]);
-
-            try {
-                String jsonMovieResponse = TheMovieDatabaseNetworkUtils
-                        .getResponseFromHttpUrl(movieRequestURL);
-
-                Movie[] movieDataArray = TheMovieDatabaseJsonUtils
-                        .getMovieArrayFromJSONData(MainActivity.this, jsonMovieResponse);
-
-                return movieDataArray;
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(Movie[] movieData) {
-            if (movieData != null) {
-                mMovieAdapter.setmMoviesData(movieData);
-            }
-        }
     }
 
     @Override
@@ -159,5 +127,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public static MovieAdapter getmMovieAdapter() {
+        return mMovieAdapter;
     }
 }

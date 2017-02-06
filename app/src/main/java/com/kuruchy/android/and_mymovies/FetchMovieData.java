@@ -22,38 +22,47 @@
  * SOFTWARE.
  */
 
-apply plugin: 'com.android.application'
+package com.kuruchy.android.and_mymovies;
 
-android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.2"
-    defaultConfig {
-        applicationId "com.kuruchy.android.and_mymovies"
-        minSdkVersion 23
-        targetSdkVersion 25
-        versionCode 1
-        versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+import android.os.AsyncTask;
+
+import java.net.URL;
+
+/**
+ * Fetch Movie Data Class.
+ *
+ * Extends from AsyncTask. Allowing to run a the movie list update on a background thread,
+ * while publishing the results to the UI thread.
+ */
+public class FetchMovieData extends AsyncTask<String, Void, Movie[]> {
+
+    @Override
+    protected Movie[] doInBackground(String... params) {
+
+        if (params.length == 0) {
+            return null;
+        }
+
+        URL movieRequestURL = TheMovieDatabaseNetworkUtils.buildUrl(params[0]);
+
+        try {
+            String jsonMovieResponse = TheMovieDatabaseNetworkUtils
+                    .getResponseFromHttpUrl(movieRequestURL);
+
+            Movie[] movieDataArray = TheMovieDatabaseJsonUtils
+                    .getMovieArrayFromJSONData(jsonMovieResponse);
+            return movieDataArray;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
-}
 
-dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    compile 'com.android.support:appcompat-v7:25.1.0'
-    testCompile 'junit:junit:4.12'
-    compile 'com.android.support:recyclerview-v7:25.0.1'
-    compile 'com.squareup.picasso:picasso:2.5.2'
-}
-
-repositories {
-    mavenCentral()
+    @Override
+    protected void onPostExecute(Movie[] movieData) {
+        if (movieData != null) {
+            MainActivity.getmMovieAdapter().setmMoviesData(movieData);
+        }
+    }
 }

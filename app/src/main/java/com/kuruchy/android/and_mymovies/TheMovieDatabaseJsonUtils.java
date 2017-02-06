@@ -42,7 +42,7 @@ public final class TheMovieDatabaseJsonUtils {
      * @return Array of Movies
      * @throws JSONException If JSON data cannot be properly parsed
      */
-    public static Movie[] getMovieArrayFromJSONData(Context context, String movieListJSONString)
+    public static Movie[] getMovieArrayFromJSONData(String movieListJSONString)
             throws JSONException {
 
         /* Movie information. Each movie info is an element of the "results" array */

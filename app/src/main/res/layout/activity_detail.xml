@@ -44,13 +44,13 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="3">
+            android:layout_weight="5">
 
             <TextView
                 android:id="@+id/tv_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="22sp"
+                android:textSize="@dimen/detail_activity_title"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentStart="true"
                 android:gravity="center_vertical|center_horizontal" />
@@ -59,7 +59,7 @@
                 android:id="@+id/tv_original_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="18sp"
+                android:textSize="@dimen/detail_activity_original_title"
                 android:layout_below="@+id/tv_title"
                 android:gravity="center_vertical|center_horizontal" />
 
@@ -85,9 +85,10 @@
                     android:layout_alignParentTop="true"
                     android:layout_alignParentStart="true"
                     android:id="@+id/iv_poster_small"
-                    android:paddingTop="16dp"
+                    android:paddingTop="@dimen/detail_activity_image_top_margin"
                     android:adjustViewBounds="true"
-                    android:paddingBottom="8dp" />
+                    android:paddingBottom="@dimen/detail_activity_image_low_margin"
+                    android:layout_gravity="center_vertical|center_horizontal" />
 
                 <TextView
                     android:id="@+id/tv_release_date"
@@ -103,49 +104,47 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1">
 
-                <RelativeLayout
+                <ScrollView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentTop="true"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1">
 
-                    <TextView
-                        android:id="@+id/tv_overview"
+                    <LinearLayout
+                        android:orientation="vertical"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="16sp"
-                        android:padding="12dp"
-                        android:layout_alignParentTop="true"
-                        android:layout_alignParentStart="true" />
+                        android:layout_weight="2.3">
 
-                </RelativeLayout>
+                        <TextView
+                            android:id="@+id/tv_overview"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/detail_activity_overview"
+                            android:padding="@dimen/detail_activity_overview_padding"
+                            android:layout_weight="1" />
+
+                        <RatingBar
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:id="@+id/rb_vote_average"
+                            android:numStars="5"
+                            android:scaleX="0.7"
+                            android:scaleY="0.7"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_weight="2" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:id="@+id/tv_vote_average"
+                            android:gravity="center_vertical|center_horizontal"
+                            android:layout_weight="2" />
+                    </LinearLayout>
+                </ScrollView>
 
             </LinearLayout>
         </LinearLayout>
 
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="3">
-
-            <RatingBar
-                android:layout_width="wrap_content"
-                android:layout_height="45dp"
-                android:id="@+id/rb_vote_average"
-                android:numStars="5"
-                android:scaleX="0.7"
-                android:scaleY="0.7"
-                android:layout_below="@+id/tv_overview"
-                android:layout_gravity="center_horizontal" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/tv_vote_average"
-                android:gravity="center_vertical|center_horizontal"
-                android:layout_alignParentStart="true" />
-        </LinearLayout>
     </LinearLayout>
 
 </RelativeLayout>

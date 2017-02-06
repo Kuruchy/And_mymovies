@@ -47,14 +47,13 @@ public final class TheMovieDatabaseNetworkUtils {
     private static final String W500 = "w500";
 
     private static final String QUALITY = W342;
-    private static final String TAG = TheMovieDatabaseNetworkUtils.class.getSimpleName();
     private static final String MOVIES_BASE_URL = "https://api.themoviedb.org/3/movie/";
     public static final String MOVIES_PICS_BASE_URL = "https://image.tmdb.org/t/p/" + QUALITY;
 
     private static final String language = "en-US";
     private static final String page = "1";
 
-    private static String api_key = "";
+    private static String api_key;
 
     final static String QUERY_PARAM = "?";
     final static String API_KEY_PARAM = "api_key";
@@ -110,10 +109,6 @@ public final class TheMovieDatabaseNetworkUtils {
         } finally {
             httpURLConnection.disconnect();
         }
-    }
-
-    public static String getApi_key() {
-        return api_key;
     }
 
     public static void setApi_key(String api_key) {
