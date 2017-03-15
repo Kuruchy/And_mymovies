@@ -50,6 +50,8 @@ public class Movie implements Parcelable {
     private boolean adult;
     private int[] genre_ids;
 
+    private String trailer_path;
+
     public Movie() {
 
     }
@@ -77,6 +79,7 @@ public class Movie implements Parcelable {
         out.writeInt(vote_count);
         out.writeDouble(vote_average);
         out.writeDouble(popularity);
+        out.writeString(trailer_path);
     }
 
     public Movie(Parcel in){
@@ -91,6 +94,7 @@ public class Movie implements Parcelable {
         vote_count = in.readInt();
         vote_average = in.readDouble();
         popularity = in.readDouble();
+        trailer_path = in.readString();
     }
 
     public static final Parcelable.Creator<Movie> CREATOR
@@ -218,5 +222,13 @@ public class Movie implements Parcelable {
 
     public void setVote_average(Double vote_average) {
         this.vote_average = vote_average;
+    }
+
+    public String getTrailer_path() {
+        return trailer_path;
+    }
+
+    public void setTrailer_path(String trailer_path) {
+        this.trailer_path = trailer_path;
     }
 }

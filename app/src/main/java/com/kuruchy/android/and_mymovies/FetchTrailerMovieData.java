@@ -25,6 +25,7 @@
 package com.kuruchy.android.and_mymovies;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.kuruchy.android.and_mymovies.utilities.TheMovieDatabaseJsonUtils;
 import com.kuruchy.android.and_mymovies.utilities.TheMovieDatabaseNetworkUtils;
@@ -32,30 +33,33 @@ import com.kuruchy.android.and_mymovies.utilities.TheMovieDatabaseNetworkUtils;
 import java.net.URL;
 
 /**
- * Fetch Movie Data Class.
+ * Fetch Trailer Movie Data Class.
  *
  * Extends from AsyncTask. Allowing to run a the movie list update on a background thread,
  * while publishing the results to the UI thread.
  */
-public class FetchMovieData extends AsyncTask<String, Void, Movie[]> {
+public class FetchTrailerMovieData extends AsyncTask<Integer, Void, String> {
 
     @Override
-    protected Movie[] doInBackground(String... params) {
+    protected String doInBackground(Integer... params) {
 
         if (params.length == 0) {
             return null;
         }
 
-        URL movieRequestURL = TheMovieDatabaseNetworkUtils.buildMovieUrl(params[0]);
+        URL movieRequestURL = TheMovieDatabaseNetworkUtils.buildMovieTrailerUrl(params[0]);
 
         try {
-            String jsonMovieResponse = TheMovieDatabaseNetworkUtils
+            String jsonMovieTrailerResponse = TheMovieDatabaseNetworkUtils
                     .getResponseFromHttpUrl(movieRequestURL);
 
-            Movie[] movieDataArray = TheMovieDatabaseJsonUtils
-                    .getMovieArrayFromJSONData(jsonMovieResponse);
+            String[] trailerUrlArray = TheMovieDatabaseJsonUtils.getVideoInfoFromJSONData(jsonMovieTrailerResponse);
 
-            return movieDataArray;
+            Log.v("TEST: ", trailerUrlArray[0]);
+
+
+
+            return trailerUrlArray[0];
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -64,9 +68,9 @@ public class FetchMovieData extends AsyncTask<String, Void, Movie[]> {
     }
 
     @Override
-    protected void onPostExecute(Movie[] movieData) {
+    protected void onPostExecute(String movieData) {
         if (movieData != null) {
-            MainActivity.getmMovieAdapter().setmMoviesData(movieData);
+            DetailActivity.setmTrailer(movieData);
         }
     }
 }

@@ -23,128 +23,175 @@
   ~ SOFTWARE.
   -->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ScrollView
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/activity_detail"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.kuruchy.android.and_mymovies.DetailActivity">
+    android:layout_height="wrap_content">
 
-    <LinearLayout
-        android:orientation="vertical"
+    <android.support.constraint.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        tools:context="com.kuruchy.android.and_mymovies.DetailActivity"
+        tools:layout_editor_absoluteY="81dp"
+        tools:layout_editor_absoluteX="0dp">
 
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="5">
+        <TextView
+            android:id="@+id/tv_original_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_title"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            tools:text="The New Title"
+            android:gravity="center_vertical|center_horizontal"
+            android:textSize="@dimen/detail_activity_original_title"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_title"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp" />
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginEnd="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            tools:text="The Original Title"
+            android:gravity="center_vertical|center_horizontal"
+            android:textSize="@dimen/detail_activity_title"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ScrollView
+            android:id="@+id/scrollView2"
+            android:layout_width="210dp"
+            android:layout_height="240dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintLeft_toRightOf="@+id/iv_poster_small"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_original_title"
+            android:layout_marginStart="8dp">
 
             <TextView
-                android:id="@+id/tv_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/detail_activity_title"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentStart="true"
-                android:gravity="center_vertical|center_horizontal" />
-
-            <TextView
-                android:id="@+id/tv_original_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/detail_activity_original_title"
-                android:layout_below="@+id/tv_title"
-                android:gravity="center_vertical|center_horizontal" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
-
-            <LinearLayout
-                android:orientation="vertical"
+                android:id="@+id/tv_overview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="2"
-                android:weightSum="1">
+                android:layout_marginEnd="16dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginStart="8dp"
+                android:padding="@dimen/detail_activity_overview_padding"
+                android:textSize="@dimen/detail_activity_overview"
+                app:layout_constraintBottom_toBottomOf="@+id/iv_poster_small"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintLeft_toRightOf="@+id/iv_poster_small"
+                app:layout_constraintRight_toRightOf="parent" />
+        </ScrollView>
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/error"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentStart="true"
-                    android:id="@+id/iv_poster_small"
-                    android:paddingTop="@dimen/detail_activity_image_top_margin"
-                    android:adjustViewBounds="true"
-                    android:paddingBottom="@dimen/detail_activity_image_low_margin"
-                    android:layout_gravity="center_vertical|center_horizontal" />
+        <ImageView
+            android:id="@+id/iv_poster_small"
+            android:layout_width="120dp"
+            android:layout_height="240dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:adjustViewBounds="true"
+            android:paddingBottom="@dimen/detail_activity_image_low_margin"
+            android:paddingTop="@dimen/detail_activity_image_top_margin"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_original_title"
+            app:srcCompat="@drawable/error" />
 
-                <TextView
-                    android:id="@+id/tv_release_date"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical|center_horizontal" />
+        <TextView
+            android:id="@+id/tv_release_date"
+            android:layout_width="99dp"
+            android:layout_height="24dp"
+            android:gravity="center_vertical|center_horizontal"
+            android:layout_marginLeft="8dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/iv_poster_small"
+            android:layout_marginRight="8dp"
+            app:layout_constraintRight_toRightOf="@+id/iv_poster_small"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp" />
 
-            </LinearLayout>
+        <TextView
+            android:id="@+id/tv_vote_average"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical|center_horizontal"
+            tools:text="4.3"
+            app:layout_constraintLeft_toRightOf="@+id/rb_vote_average"
+            android:layout_marginLeft="16dp"
+            app:layout_constraintTop_toTopOf="@+id/rb_vote_average"
+            android:layout_marginTop="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/rb_vote_average"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="16dp" />
 
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1">
+        <RatingBar
+            android:id="@+id/rb_vote_average"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:numStars="5"
+            android:scaleX="0.7"
+            android:scaleY="0.7"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/tv_release_date"
+            android:layout_marginStart="8dp" />
 
-                <ScrollView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1">
+        <ImageButton
+            android:id="@+id/b_trailer"
+            android:layout_width="58dp"
+            android:layout_height="58dp"
+            android:layout_marginTop="8dp"
+            android:background="@android:drawable/ic_media_play"
+            app:layout_constraintTop_toBottomOf="@+id/rb_vote_average"
+            android:layout_marginLeft="8dp"
+            app:layout_constraintLeft_toLeftOf="parent" />
 
-                    <LinearLayout
-                        android:orientation="vertical"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="2.3">
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/favorite_action_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:layout_marginRight="8dp"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginLeft="8dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintHorizontal_bias="1.0" />
 
-                        <TextView
-                            android:id="@+id/tv_overview"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:textSize="@dimen/detail_activity_overview"
-                            android:padding="@dimen/detail_activity_overview_padding"
-                            android:layout_weight="1" />
+    </android.support.constraint.ConstraintLayout>
 
-                        <RatingBar
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:id="@+id/rb_vote_average"
-                            android:numStars="5"
-                            android:scaleX="0.7"
-                            android:scaleY="0.7"
-                            android:layout_gravity="center_horizontal"
-                            android:layout_weight="2" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:id="@+id/tv_vote_average"
-                            android:gravity="center_vertical|center_horizontal"
-                            android:layout_weight="2" />
-                    </LinearLayout>
-                </ScrollView>
-
-            </LinearLayout>
-        </LinearLayout>
-
-    </LinearLayout>
-
-</RelativeLayout>
+</ScrollView>

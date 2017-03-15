@@ -22,12 +22,15 @@
  * SOFTWARE.
  */
 
-package com.kuruchy.android.and_mymovies;
+package com.kuruchy.android.and_mymovies.utilities;
 
-import android.content.Context;
+import com.kuruchy.android.and_mymovies.Movie;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.IOException;
 
 /**
  * The Movie Database Jason Utils
@@ -43,7 +46,7 @@ public final class TheMovieDatabaseJsonUtils {
      * @throws JSONException If JSON data cannot be properly parsed
      */
     public static Movie[] getMovieArrayFromJSONData(String movieListJSONString)
-            throws JSONException {
+            throws JSONException, IOException {
 
         /* Movie information. Each movie info is an element of the "results" array */
         final String TMD_RESULTS = "results";
@@ -62,7 +65,6 @@ public final class TheMovieDatabaseJsonUtils {
         final String TMD_VIDEO = "video";
         final String TMD_VOTE_AVERAGE = "vote_average";
 
-
         Movie[] parsedMoviesData = null;
 
         JSONObject movieJson = new JSONObject(movieListJSONString);
@@ -77,7 +79,7 @@ public final class TheMovieDatabaseJsonUtils {
 
             Movie movie = new Movie();
 
-            movie.setPoster_path(TheMovieDatabaseNetworkUtils.MOVIES_PICS_BASE_URL +  movieObject.getString(TMD_POSTER_PATH));
+            movie.setPoster_path(TheMovieDatabaseNetworkUtils.MOVIES_PICS_BASE_URL + movieObject.getString(TMD_POSTER_PATH));
             movie.setAdult(movieObject.getBoolean(TMD_ADULT));
             movie.setOverview(movieObject.getString(TMD_OVERVIEW));
             movie.setRelease_date(movieObject.getString(TMD_RELEASE_DATE));
@@ -97,4 +99,49 @@ public final class TheMovieDatabaseJsonUtils {
 
         return parsedMoviesData;
     }
+
+    /**
+     * This method parses JSON and returns an array of urls for each trailer
+     *
+     * @param movieTrailerListJSONString JSON string returned from server
+     * @return Array of Trailers
+     * @throws JSONException If JSON data cannot be properly parsed
+     */
+    public static String[] getVideoInfoFromJSONData(String movieTrailerListJSONString)
+            throws JSONException {
+
+        final String TMD_RESULTS = "results";
+        final String TMD_TRAILER_ID = "id";
+        final String TMD_TRAILER_ISO_639_1 = "iso_639_1";
+        final String TMD_TRAILER_ISO_3166_1 = "iso_3166_1";
+        final String TMD_TRAILER_KEY = "key";
+        final String TMD_TRAILER_NAME = "name";
+        final String TMD_TRAILER_SITE = "site";
+        final String TMD_TRAILER_SIZE = "size";
+        final String TMD_TRAILER_TYPE = "type";
+
+        String[] parsedTrailerData = null;
+
+        JSONObject movieTrailerJson = new JSONObject(movieTrailerListJSONString);
+
+        JSONArray movieTrailerArray = movieTrailerJson.getJSONArray(TMD_RESULTS);
+
+        parsedTrailerData = new String[movieTrailerArray.length()];
+
+        for (int i = 0; i < movieTrailerArray.length(); i++) {
+
+            JSONObject movieObject = movieTrailerArray.getJSONObject(i);
+
+            String movieTrailerURL = new String();
+
+            movieTrailerURL += TheMovieDatabaseNetworkUtils.MOVIES_TRAILER_YOUTUBE_BASE_URL +
+                    movieObject.getString(TMD_TRAILER_KEY);
+
+
+            parsedTrailerData[i] = movieTrailerURL;
+        }
+
+        return parsedTrailerData;
+    }
+
 }

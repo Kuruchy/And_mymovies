@@ -22,10 +22,9 @@
  * SOFTWARE.
  */
 
-package com.kuruchy.android.and_mymovies;
+package com.kuruchy.android.and_mymovies.utilities;
 
 import android.net.Uri;
-import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -49,6 +48,7 @@ public final class TheMovieDatabaseNetworkUtils {
     private static final String QUALITY = W342;
     private static final String MOVIES_BASE_URL = "https://api.themoviedb.org/3/movie/";
     public static final String MOVIES_PICS_BASE_URL = "https://image.tmdb.org/t/p/" + QUALITY;
+    public static final String MOVIES_TRAILER_YOUTUBE_BASE_URL = "https://www.youtube.com/watch?v=";
 
     private static final String language = "en-US";
     private static final String page = "1";
@@ -57,9 +57,9 @@ public final class TheMovieDatabaseNetworkUtils {
 
     final static String QUERY_PARAM = "?";
     final static String API_KEY_PARAM = "api_key";
-    final static String TOP_RATED = "top_rated";
-    final static String POPULAR = "popular";
-    static String SORTING_PARAM = TOP_RATED;
+    public final static String TOP_RATED = "top_rated";
+    public final static String POPULAR = "popular";
+    public static String SORTING_PARAM = TOP_RATED;
     final static String LANGUAGE_PARAM = "language";
     final static String PAGE_PARAM = "page";
 
@@ -69,11 +69,32 @@ public final class TheMovieDatabaseNetworkUtils {
      * @param sortingParam The sorting method
      * @return The URL to use to query the movies server.
      */
-    public static URL buildUrl(String sortingParam) {
+    public static URL buildMovieUrl(String sortingParam) {
         Uri builtUri = Uri.parse(MOVIES_BASE_URL + sortingParam + QUERY_PARAM).buildUpon()
                 .appendQueryParameter(API_KEY_PARAM, api_key)
                 .appendQueryParameter(LANGUAGE_PARAM, language)
                 .appendQueryParameter(PAGE_PARAM, page)
+                .build();
+
+        URL url = null;
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        return url;
+    }
+
+    /**
+     * Builds the URL used to talk to the movie server using a sorting method.
+     *
+     * @param movieId The Movie ID
+     * @return The URL to use to query the movies server.
+     */
+    public static URL buildMovieTrailerUrl(int movieId) {
+        Uri builtUri = Uri.parse(MOVIES_BASE_URL + movieId + "/videos" + QUERY_PARAM).buildUpon()
+                .appendQueryParameter(API_KEY_PARAM, api_key)
+                .appendQueryParameter(LANGUAGE_PARAM, language)
                 .build();
 
         URL url = null;
