@@ -25,11 +25,15 @@
 package com.kuruchy.android.and_mymovies;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
 import com.squareup.picasso.Picasso;
 
 /**
@@ -41,9 +45,12 @@ import com.squareup.picasso.Picasso;
  */
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHolder>{
 
-    public Movie[] mMoviesData;
+    private Movie[] mMoviesData;
 
     private final MovieAdapterOnClickHandler mClickHandler;
+    private final Context mContext;
+
+    private Cursor mCursor;
 
     /**
      * The interface that receives onClick messages.
@@ -52,7 +59,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         void onClick(Movie viewClicked);
     }
 
-    public MovieAdapter(MovieAdapterOnClickHandler clickHandler){
+    public MovieAdapter(@NonNull Context context, MovieAdapterOnClickHandler clickHandler){
+        mContext = context;
         mClickHandler = clickHandler;
     }
 
@@ -67,43 +75,62 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
 
         @Override
         public void onClick(View view) {
-            Movie movie = mMoviesData[this.getAdapterPosition()];
-            mClickHandler.onClick(movie);
+            mCursor.moveToPosition(this.getAdapterPosition());
+            mClickHandler.onClick(new Movie(mCursor));
         }
     }
 
     @Override
     public MovieAdapterViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        Context context = viewGroup.getContext();
+
         int layoutIdForListItem = R.layout.movie_layout;
-        LayoutInflater inflater = LayoutInflater.from(context);
+        LayoutInflater inflater = LayoutInflater.from(mContext);
         boolean shouldAttachToParentImmediately = false;
 
         View view = inflater.inflate(layoutIdForListItem, viewGroup, shouldAttachToParentImmediately);
+        view.setFocusable(true);
         return new MovieAdapterViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(MovieAdapterViewHolder movieAdapterViewHolder, int position) {
 
+        mCursor.moveToPosition(position);
+
         Picasso.with(movieAdapterViewHolder.mMovieImageView.getContext())
-                .load(mMoviesData[position].getPoster_path())
+                .load(mCursor.getString(MainActivity.INDEX_MOVIE_PATH))
                 .placeholder(R.drawable.placeholder)
                 .error(R.drawable.error)
                 .resize(300, 500)
                 .into(movieAdapterViewHolder.mMovieImageView);
 
+        //Log.v("LOG:", mCursor.getString(mCursor.getColumnIndex(MoviesContract.MovieEntry.COLUMN_POSTER_PATH)));
     }
 
     @Override
     public int getItemCount() {
-        if (null == mMoviesData) return 0;
-        return mMoviesData.length;
+        if (null == mCursor) return 0;
+        return mCursor.getCount();
     }
 
-    public void setmMoviesData(Movie[] moviesData) {
-        mMoviesData = moviesData;
+    /**
+     * Swaps the cursor used by the ForecastAdapter for its weather data. This method is called by
+     * MainActivity after a load has finished, as well as when the Loader responsible for loading
+     * the weather data is reset. When this method is called, we assume we have a completely new
+     * set of data, so we call notifyDataSetChanged to tell the RecyclerView to update.
+     *
+     * @param newCursor the new cursor to use as ForecastAdapter's data source
+     */
+    void swapCursor(Cursor newCursor) {
+        mCursor = newCursor;
         notifyDataSetChanged();
     }
 
+    public void setmMoviesData(Movie[] mMoviesData) {
+        this.mMoviesData = mMoviesData;
+    }
+
+    public Movie[] getmMoviesData() {
+        return mMoviesData;
+    }
 }

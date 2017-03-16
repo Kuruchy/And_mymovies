@@ -45,7 +45,7 @@ public final class TheMovieDatabaseNetworkUtils {
     private static final String W342 = "w342";
     private static final String W500 = "w500";
 
-    private static final String QUALITY = W342;
+    private static final String QUALITY = W185;
     private static final String MOVIES_BASE_URL = "https://api.themoviedb.org/3/movie/";
     public static final String MOVIES_PICS_BASE_URL = "https://image.tmdb.org/t/p/" + QUALITY;
     public static final String MOVIES_TRAILER_YOUTUBE_BASE_URL = "https://www.youtube.com/watch?v=";
@@ -59,6 +59,7 @@ public final class TheMovieDatabaseNetworkUtils {
     final static String API_KEY_PARAM = "api_key";
     public final static String TOP_RATED = "top_rated";
     public final static String POPULAR = "popular";
+    public final static String FAVORITE = "favorite";
     public static String SORTING_PARAM = TOP_RATED;
     final static String LANGUAGE_PARAM = "language";
     final static String PAGE_PARAM = "page";

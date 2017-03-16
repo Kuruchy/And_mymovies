@@ -38,4 +38,10 @@
         android:orderInCategory="2"
         android:title="@string/sort_by_popular"
         app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/sort_by_favorite"
+        android:orderInCategory="3"
+        android:title="@string/sort_by_favorite"
+        app:showAsAction="ifRoom"/>
 </menu>

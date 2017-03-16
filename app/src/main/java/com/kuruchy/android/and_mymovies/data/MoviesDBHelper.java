@@ -30,50 +30,54 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 /*
-* FavoriteMoviesDBHelper
+* MoviesDBHelper
 *
 * Database Helper Class for accessing the Database.
 *
 */
-public class FavoriteMoviesDBHelper extends SQLiteOpenHelper {
-	public static final String LOG_TAG = FavoriteMoviesDBHelper.class.getSimpleName();
+public class MoviesDBHelper extends SQLiteOpenHelper {
+	public static final String LOG_TAG = MoviesDBHelper.class.getSimpleName();
 
 	//name & version
 	private static final String DATABASE_NAME = "movies.db";
-	private static final int DATABASE_VERSION = 1;
+	private static final int DATABASE_VERSION = 4;
 
-	public FavoriteMoviesDBHelper(Context context) {
+	public MoviesDBHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 	}
 
 	// Create the database
 	@Override
 	public void onCreate(SQLiteDatabase sqLiteDatabase) {
-		final String SQL_CREATE_MOVIE_TABLE = "CREATE TABLE " +
-				FavoriteMoviesContract.FavoriteMovieEntry.TABLE_FAVORITE_MOVIES + 
-				"(" + 
-				FavoriteMoviesContract.FavoriteMovieEntry._ID +
-				" INTEGER PRIMARY KEY AUTOINCREMENT, " +
-				FavoriteMoviesContract.FavoriteMovieEntry.COLUMN_MOVIE_TITLE +
-				" TEXT NOT NULL, " +
-				FavoriteMoviesContract.FavoriteMovieEntry.COLUMN_MOVIE_ORG_TITLE +
-				" TEXT NOT NULL, " +
-				FavoriteMoviesContract.FavoriteMovieEntry.COLUMN_MOVIE_ID +
-				" TEXT NOT NULL, " +
-				FavoriteMoviesContract.FavoriteMovieEntry.COLUMN_POSTER_PATH +
-				" TEXT NOT NULL, " +
-				FavoriteMoviesContract.FavoriteMovieEntry.COLUMN_POSTER_PIC +
-				" TEXT NOT NULL, " +
-				FavoriteMoviesContract.FavoriteMovieEntry.COLUMN_SYNOPSIS +
-				" TEXT NOT NULL, " +
-				FavoriteMoviesContract.FavoriteMovieEntry.COLUMN_USER_RATING +
-				" TEXT NOT NULL, " +
-				FavoriteMoviesContract.FavoriteMovieEntry.COLUMN_GLOBAL_RATING +
-				" TEXT NOT NULL, " +
-				FavoriteMoviesContract.FavoriteMovieEntry.COLUMN_RELEASE_DATE +
-				" TEXT NOT NULL);";
+        for(String tableName : MoviesContract.MovieEntry.TABLE_NAMES){
+            final String SQL_CREATE_MOVIE_TABLE = "CREATE TABLE " +
+                    tableName +
+                    "(" +
+                    MoviesContract.MovieEntry._ID +
+                    " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    MoviesContract.MovieEntry.COLUMN_MOVIE_TITLE +
+                    " TEXT NOT NULL, " +
+                    MoviesContract.MovieEntry.COLUMN_MOVIE_ORG_TITLE +
+                    " TEXT NOT NULL, " +
+                    MoviesContract.MovieEntry.COLUMN_MOVIE_ID +
+                    " INTEGER NOT NULL, " +
+                    MoviesContract.MovieEntry.COLUMN_POSTER_PATH +
+                    " TEXT NOT NULL, " +
+                    //MoviesContract.MovieEntry.COLUMN_POSTER_PIC +
+                    //" TEXT NOT NULL, " +
+                    MoviesContract.MovieEntry.COLUMN_SYNOPSIS +
+                    " TEXT NOT NULL, " +
+                    MoviesContract.MovieEntry.COLUMN_USER_RATING +
+                    " TEXT NOT NULL, " +
+                    MoviesContract.MovieEntry.COLUMN_GLOBAL_RATING +
+                    " TEXT NOT NULL, " +
+                    MoviesContract.MovieEntry.COLUMN_RELEASE_DATE +
+                    " TEXT NOT NULL, " +
+                    MoviesContract.MovieEntry.COLUMN_TRAILER_PATH +
+                    " TEXT NOT NULL);";
 
-		sqLiteDatabase.execSQL(SQL_CREATE_MOVIE_TABLE);
+            sqLiteDatabase.execSQL(SQL_CREATE_MOVIE_TABLE);
+        }
 	}
 
 	// Upgrade database when version is changed.
@@ -82,10 +86,10 @@ public class FavoriteMoviesDBHelper extends SQLiteOpenHelper {
 		Log.w(LOG_TAG, "Upgrading database from version " + oldVersion + " to " +
 				newVersion + ". OLD DATA WILL BE DESTROYED");
 		// Drop the table
-		sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + FavoriteMoviesContract.FavoriteMovieEntry.TABLE_FAVORITE_MOVIES);
-        sqLiteDatabase.execSQL("DELETE FROM SQLITE_SEQUENCE WHERE NAME = '" +
-                FavoriteMoviesContract.FavoriteMovieEntry.TABLE_FAVORITE_MOVIES + "'");
-
+        for(String tableName: MoviesContract.MovieEntry.TABLE_NAMES){
+            sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + tableName);
+            sqLiteDatabase.execSQL("DELETE FROM SQLITE_SEQUENCE WHERE NAME = '" + tableName + "'");
+        }
 		// Re-create database
 		onCreate(sqLiteDatabase);
 	}

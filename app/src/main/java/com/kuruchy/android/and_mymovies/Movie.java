@@ -24,8 +24,11 @@
 
 package com.kuruchy.android.and_mymovies;
 
+import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import com.kuruchy.android.and_mymovies.data.MoviesContract;
 
 /**
  * Movie Class.
@@ -51,14 +54,28 @@ public class Movie implements Parcelable {
     private int[] genre_ids;
 
     private String trailer_path;
+    private Double vote_user;
+
+    private Cursor mCursor;
 
     public Movie() {
 
     }
 
-    public Movie(String name, String imageUrl) {
-        this.poster_path = imageUrl;
-        this.original_title = name;
+    public Movie(Cursor mCursor) {
+        this.poster_path = mCursor.getString(MainActivity.INDEX_MOVIE_PATH);
+        this.overview = mCursor.getString(mCursor.getColumnIndex(MoviesContract.MovieEntry.COLUMN_SYNOPSIS));
+        this.release_date = mCursor.getString(mCursor.getColumnIndex(MoviesContract.MovieEntry.COLUMN_RELEASE_DATE));
+        this.original_title = mCursor.getString(mCursor.getColumnIndex(MoviesContract.MovieEntry.COLUMN_MOVIE_ORG_TITLE));
+        this.original_language = "ELFIC";
+        this.title = mCursor.getString(mCursor.getColumnIndex(MoviesContract.MovieEntry.COLUMN_MOVIE_TITLE));
+        this.backdrop_path = "";
+        this.id = mCursor.getInt(mCursor.getColumnIndex(MoviesContract.MovieEntry.COLUMN_MOVIE_ID));
+        this.vote_count = mCursor.getInt(mCursor.getColumnIndex(MoviesContract.MovieEntry.COLUMN_USER_RATING));
+        this.vote_average = mCursor.getDouble(mCursor.getColumnIndex(MoviesContract.MovieEntry.COLUMN_GLOBAL_RATING));
+        this.popularity = mCursor.getDouble(mCursor.getColumnIndex(MoviesContract.MovieEntry.COLUMN_GLOBAL_RATING));
+        this.trailer_path = mCursor.getString(mCursor.getColumnIndex(MoviesContract.MovieEntry.COLUMN_TRAILER_PATH));
+        //this.vote_user = mCursor.getInt(mCursor.getColumnIndex(MoviesContract.MovieEntry.COLUMN_USER_RATING));
     }
 
     @Override
@@ -80,6 +97,7 @@ public class Movie implements Parcelable {
         out.writeDouble(vote_average);
         out.writeDouble(popularity);
         out.writeString(trailer_path);
+        //out.writeDouble(vote_user);
     }
 
     public Movie(Parcel in){
@@ -95,6 +113,7 @@ public class Movie implements Parcelable {
         vote_average = in.readDouble();
         popularity = in.readDouble();
         trailer_path = in.readString();
+        //vote_user = in.readDouble();
     }
 
     public static final Parcelable.Creator<Movie> CREATOR
@@ -231,4 +250,13 @@ public class Movie implements Parcelable {
     public void setTrailer_path(String trailer_path) {
         this.trailer_path = trailer_path;
     }
+
+    public Double getVote_user() {
+        return vote_user;
+    }
+
+    public void setVote_user(Double vote_user) {
+        this.vote_user = vote_user;
+    }
+
 }

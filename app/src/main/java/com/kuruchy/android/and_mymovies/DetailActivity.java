@@ -28,7 +28,6 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -38,7 +37,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.kuruchy.android.and_mymovies.data.FavoriteMoviesContract;
+import com.kuruchy.android.and_mymovies.data.MoviesContract;
 import com.squareup.picasso.Picasso;
 
 /**
@@ -63,7 +62,7 @@ public class DetailActivity extends AppCompatActivity {
 
     private FloatingActionButton mFAB;
 
-    private static String mTrailer;
+    public static String mTrailer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,13 +82,6 @@ public class DetailActivity extends AppCompatActivity {
         mPlayTrailer = (ImageButton) findViewById(R.id.b_trailer);
 
         mFAB = (FloatingActionButton) findViewById(R.id.favorite_action_button);
-        mFAB.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Here's a Snackbar", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         Intent intentThatStartedThisActivity = getIntent();
 
@@ -116,9 +108,19 @@ public class DetailActivity extends AppCompatActivity {
                         .into(mPosterImage);
 
                 mPlayTrailer.setOnClickListener(new View.OnClickListener() {
+                    @Override
                     public void onClick(View v) {
                         //openWebPage(mMovie.getTrailer_path());
                         openWebPage(mTrailer);
+                    }
+                });
+
+                mFAB.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        // When is favorite automatically set vote to max
+                        //mMovie.setVote_user(5.0);
+                        saveMovie(mMovie, MoviesContract.MovieEntry.CONTENT_FAVORITE_URI);
                     }
                 });
 
@@ -145,15 +147,26 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     //TODO fix save data to send all data to content resolver
-    public void saveData(String id){
+    public void saveMovie(Movie mMovie, Uri mUri){
 
         // Insert new task data via a ContentResolver
         // Create new empty ContentValues object
         ContentValues contentValues = new ContentValues();
-        // Put the task description and selected mPriority into the ContentValues
-        contentValues.put(FavoriteMoviesContract.FavoriteMovieEntry.COLUMN_MOVIE_ID, id);
+
+        // Put the movie id and sinopsys into the ContentValues
+        contentValues.put(MoviesContract.MovieEntry.COLUMN_MOVIE_TITLE, mMovie.getTitle().toString());
+        contentValues.put(MoviesContract.MovieEntry.COLUMN_MOVIE_ORG_TITLE, mMovie.getOriginal_title().toString());
+        contentValues.put(MoviesContract.MovieEntry.COLUMN_MOVIE_ID, mMovie.getId());
+        contentValues.put(MoviesContract.MovieEntry.COLUMN_POSTER_PATH, mMovie.getPoster_path().toString());
+        //contentValues.put(MoviesContract.MovieEntry.COLUMN_POSTER_PIC, mMovie.get());
+        contentValues.put(MoviesContract.MovieEntry.COLUMN_SYNOPSIS, mMovie.getOverview().toString());
+        contentValues.put(MoviesContract.MovieEntry.COLUMN_USER_RATING, 5.0);
+        contentValues.put(MoviesContract.MovieEntry.COLUMN_GLOBAL_RATING, mMovie.getVote_average());
+        contentValues.put(MoviesContract.MovieEntry.COLUMN_RELEASE_DATE, mMovie.getRelease_date().toString());
+        contentValues.put(MoviesContract.MovieEntry.COLUMN_TRAILER_PATH, mTrailer);
+
         // Insert the content values via a ContentResolver
-        Uri uri = getContentResolver().insert(FavoriteMoviesContract.FavoriteMovieEntry.CONTENT_URI, contentValues);
+        Uri uri = getContentResolver().insert(mUri, contentValues);
 
         // Display the URI that's returned with a Toast
         // [Hint] Don't forget to call finish() to return to MainActivity after this insert is complete

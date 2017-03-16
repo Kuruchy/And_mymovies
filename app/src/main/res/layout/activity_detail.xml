@@ -153,7 +153,10 @@
             android:layout_marginTop="8dp"
             app:layout_constraintBottom_toBottomOf="@+id/rb_vote_average"
             android:layout_marginBottom="8dp"
-            android:layout_marginStart="16dp" />
+            android:layout_marginStart="16dp"
+            android:layout_marginRight="8dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintHorizontal_bias="0.0" />
 
         <RatingBar
             android:id="@+id/rb_vote_average"
