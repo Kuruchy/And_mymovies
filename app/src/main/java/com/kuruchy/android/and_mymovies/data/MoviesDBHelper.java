@@ -38,9 +38,9 @@ import android.util.Log;
 public class MoviesDBHelper extends SQLiteOpenHelper {
 	public static final String LOG_TAG = MoviesDBHelper.class.getSimpleName();
 
-	//name & version
+	// Name & version of the Database
 	private static final String DATABASE_NAME = "movies.db";
-	private static final int DATABASE_VERSION = 4;
+	private static final int DATABASE_VERSION = 5;
 
 	public MoviesDBHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -73,8 +73,10 @@ public class MoviesDBHelper extends SQLiteOpenHelper {
                     " TEXT NOT NULL, " +
                     MoviesContract.MovieEntry.COLUMN_RELEASE_DATE +
                     " TEXT NOT NULL, " +
-                    MoviesContract.MovieEntry.COLUMN_TRAILER_PATH +
-                    " TEXT NOT NULL);";
+					MoviesContract.MovieEntry.COLUMN_TRAILER_PATH +
+					" TEXT NOT NULL, " +
+			        MoviesContract.MovieEntry.COLUMN_REVIEWS +
+					" TEXT NOT NULL);";
 
             sqLiteDatabase.execSQL(SQL_CREATE_MOVIE_TABLE);
         }

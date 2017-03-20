@@ -27,7 +27,6 @@ package com.kuruchy.android.and_mymovies;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.content.res.Configuration;
@@ -51,15 +50,14 @@ import com.kuruchy.android.and_mymovies.utilities.TheMovieDatabaseNetworkUtils;
 /**
  * Main Activity Class.
  *
+ * Implements LoadManager and MovieAdapterOnClickHandler
  */
 public class MainActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor>,
         MovieAdapter.MovieAdapterOnClickHandler {
 
-    /*
-     * The columns of data that we are interested in displaying within our MainActivity's list of
-     * movie data.
-     */
+    // The columns of data that we are interested in displaying within our MainActivity's list of
+    // movie data.
     public static final String[] MAIN_MOVIE_PROJECTION = {
             MoviesContract.MovieEntry.COLUMN_POSTER_PATH,
             MoviesContract.MovieEntry.COLUMN_SYNOPSIS,
@@ -70,14 +68,12 @@ public class MainActivity extends AppCompatActivity implements
             MoviesContract.MovieEntry.COLUMN_USER_RATING,
             MoviesContract.MovieEntry.COLUMN_GLOBAL_RATING,
             MoviesContract.MovieEntry.COLUMN_GLOBAL_RATING,
-            MoviesContract.MovieEntry.COLUMN_TRAILER_PATH
+            MoviesContract.MovieEntry.COLUMN_TRAILER_PATH,
+            MoviesContract.MovieEntry.COLUMN_REVIEWS
     };
 
-    /*
-     * We store the indices of the values in the array of Strings above to more quickly be able to
-     * access the data from our query. If the order of the Strings above changes, these indices
-     * must be adjusted to match the order of the Strings.
-     */
+    // The indices of the values are stored in the array of Strings above to more quickly be able to
+    // access the data from our query.
     public static final int INDEX_MOVIE_PATH = 0;
     public static final int INDEX_SYNOPSIS = 1;
     public static final int INDEX_RELEASE_DATE = 2;
@@ -119,19 +115,12 @@ public class MainActivity extends AppCompatActivity implements
 
         mRecyclerView.setAdapter(mMovieAdapter);
 
-        /*
-         * Ensures a loader is initialized and active. If the loader doesn't already exist, one is
-         * created and (if the activity/fragment is currently started) starts the loader. Otherwise
-         * the last created loader is re-used.
-         */
-        getSupportLoaderManager().initLoader(ID_FAVORITE_MOVIE_LOADER, null, this);
+        // Creates a Loader if one doesn't already exist, and starts it. Otherwise
+        // the last created loader is re-used.
+        getSupportLoaderManager().initLoader(ID_TOP_RATED_MOVIE_LOADER, null, this);
 
+        // Starts the Sync task MoviesSyncIntentService
         MoviesSyncUtils.startImmediateSync(this);
-
-        //loadFetchMovieData(TheMovieDatabaseNetworkUtils.SORTING_PARAM);
-
-
-
     }
 
     @Override
@@ -140,11 +129,11 @@ public class MainActivity extends AppCompatActivity implements
         switch (loaderId) {
 
             case ID_FAVORITE_MOVIE_LOADER:
-                /* URI for all rows of weather data in our weather table */
+                // URI for all favorite rows of movies data in our movie table
                 Uri favoriteMovieQueryUri = MoviesContract.MovieEntry.CONTENT_FAVORITE_URI;
-                /* Sort order: Ascending by date */
+
+                // Sorting by id, ascendant
                 String sortOrder = MoviesContract.MovieEntry.COLUMN_MOVIE_ID + " ASC";
-                //Log.v("FAV", favoriteMovieQueryUri.toString());
 
                 return new CursorLoader(this,
                         favoriteMovieQueryUri,
@@ -154,9 +143,8 @@ public class MainActivity extends AppCompatActivity implements
                         sortOrder);
 
             case ID_POPULAR_MOVIE_LOADER:
-                /* URI for all rows of weather data in our weather table */
+                // URI for all popular rows of movies data in our movie table
                 Uri popularMovieQueryUri = MoviesContract.MovieEntry.CONTENT_POPULAR_URI;
-                //Log.v("MOS", popularMovieQueryUri.toString());
 
                 return new CursorLoader(this,
                         popularMovieQueryUri,
@@ -166,9 +154,8 @@ public class MainActivity extends AppCompatActivity implements
                         null);
 
             case ID_TOP_RATED_MOVIE_LOADER:
-                /* URI for all rows of weather data in our weather table */
+                // URI for top rated rows of movies data in our movie table
                 Uri topRatedMovieQueryUri = MoviesContract.MovieEntry.CONTENT_TOP_RATED_URI;
-                //Log.v("TOP", topRatedMovieQueryUri.toString());
 
                 return new CursorLoader(this,
                         topRatedMovieQueryUri,
@@ -192,21 +179,12 @@ public class MainActivity extends AppCompatActivity implements
         mMovieAdapter.swapCursor(null);
     }
 
-    /**
-     * Calls the Async Task that will fetch the movie data.
-     *
-     * @param sorting The sorting method to run the Async Task.
-     */
-    private void loadFetchMovieData(String sorting) {
-        new FetchMovieData().execute(sorting);
-    }
-
     @Override
     public void onClick(Movie movie) {
         Context context = this;
         Class destinationClass = DetailActivity.class;
         Intent intentToStartDetailActivity = new Intent(context, destinationClass);
-        Log.v("DEBUG", movie.getTitle());
+        //Log.v("DEBUG", movie.getTitle());
         intentToStartDetailActivity.putExtra("movie_obj", (Parcelable) movie);
         startActivity(intentToStartDetailActivity);
     }

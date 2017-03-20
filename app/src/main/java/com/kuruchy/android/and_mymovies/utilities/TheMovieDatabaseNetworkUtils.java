@@ -92,6 +92,27 @@ public final class TheMovieDatabaseNetworkUtils {
      * @param movieId The Movie ID
      * @return The URL to use to query the movies server.
      */
+    public static URL buildMovieReviewUrl(int movieId) {
+        Uri builtUri = Uri.parse(MOVIES_BASE_URL + movieId + "/reviews" + QUERY_PARAM).buildUpon()
+                .appendQueryParameter(API_KEY_PARAM, api_key)
+                .appendQueryParameter(LANGUAGE_PARAM, language)
+                .build();
+
+        URL url = null;
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        return url;
+    }
+
+    /**
+     * Builds the URL used to talk to the movie server using a sorting method.
+     *
+     * @param movieId The Movie ID
+     * @return The URL to use to query the movies server.
+     */
     public static URL buildMovieTrailerUrl(int movieId) {
         Uri builtUri = Uri.parse(MOVIES_BASE_URL + movieId + "/videos" + QUERY_PARAM).buildUpon()
                 .appendQueryParameter(API_KEY_PARAM, api_key)

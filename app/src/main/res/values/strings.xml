@@ -27,6 +27,7 @@
     <string name="sort_by_top">Top Rated</string>
     <string name="sort_by_popular">Most Popular</string>
     <string name="sort_by_favorite">Favorite</string>
-
+    <string name="reviews_tag">Reviews:</string>
+    <string name="show_reviews">See Reviews:</string>
     <string name="detail_film_name">Detailed Movie Title</string>
 </resources>

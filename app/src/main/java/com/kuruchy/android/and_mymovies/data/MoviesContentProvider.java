@@ -53,7 +53,7 @@ public class MoviesContentProvider extends ContentProvider{
 
 	private static UriMatcher buildUriMatcher(){
 
-		// Building an UriMatcher eith NO_MATCH as the code
+		// Building an UriMatcher with NO_MATCH as the code
 		final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
 
 		// Adding an UriMatcher for each type of URI needed
@@ -79,10 +79,10 @@ public class MoviesContentProvider extends ContentProvider{
 
 		switch (match) {
 			case FAVORITE_MOVIES:
-				// directory
+				// Directory
 				return "vnd.android.cursor.dir" + "/" + MoviesContract.AUTHORITY + "/" + MoviesContract.PATH_FAVORITE_MOVIES;
 			case FAVORITE_MOVIE_WITH_ID:
-				// single item type
+				// Single item type
 				return "vnd.android.cursor.item" + "/" + MoviesContract.AUTHORITY + "/" + MoviesContract.PATH_FAVORITE_MOVIES;
 			default:
 				throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -99,9 +99,8 @@ public class MoviesContentProvider extends ContentProvider{
 		int match = sUriMatcher.match(uri);
 		Cursor retCursor;
 
-		// Query for the tasks directory and write a default case
+		// Query for the different movies directory
 		switch (match) {
-			// Query for the tasks directory
 			case FAVORITE_MOVIES:
 				retCursor =  db.query(MoviesContract.MovieEntry.FAVORITE_TABLE_NAME,
 						projection,
@@ -144,18 +143,19 @@ public class MoviesContentProvider extends ContentProvider{
 	@Override
 	public Uri insert(@NonNull Uri uri, ContentValues values){
 
-        // Get access to the task database (to write new data to)
+        // Get access to the movie database (to write new data to)
         final SQLiteDatabase db = mFavoriteMoviesDBHelper.getWritableDatabase();
 
-        // Write URI matching code to identify the match for the tasks directory
+        // Write URI matching code to identify the match for the movies directory
         int match = sUriMatcher.match(uri);
-        Uri returnUri; // URI to be returned
+
+        // URI to be returned
+        Uri returnUri;
         long id;
 
         switch (match) {
             case FAVORITE_MOVIES:
                 // Insert new values into the database
-                // Inserting values into tasks table
                 id = db.insert(MoviesContract.MovieEntry.FAVORITE_TABLE_NAME, null, values);
                 if ( id > 0 ) {
                     returnUri = ContentUris.withAppendedId(MoviesContract.MovieEntry.CONTENT_FAVORITE_URI, id);
@@ -165,7 +165,6 @@ public class MoviesContentProvider extends ContentProvider{
                 break;
             case TOP_RATED_MOVIES:
                 // Insert new values into the database
-                // Inserting values into tasks table
                 id = db.insert(MoviesContract.MovieEntry.TOP_RATED_TABLE_NAME, null, values);
                 if ( id > 0 ) {
                     returnUri = ContentUris.withAppendedId(MoviesContract.MovieEntry.CONTENT_TOP_RATED_URI, id);
@@ -175,7 +174,6 @@ public class MoviesContentProvider extends ContentProvider{
                 break;
             case MOST_POPULAR_MOVIES:
                 // Insert new values into the database
-                // Inserting values into tasks table
                 id = db.insert(MoviesContract.MovieEntry.MOST_POPULAR_TABLE_NAME, null, values);
                 if ( id > 0 ) {
                     returnUri = ContentUris.withAppendedId(MoviesContract.MovieEntry.CONTENT_POPULAR_URI, id);
@@ -197,72 +195,68 @@ public class MoviesContentProvider extends ContentProvider{
 	@Override
 	public int delete(@NonNull Uri uri, String selection, String[] selectionArgs){
 
-        // Get access to the database and write URI matching code to recognize a single item
+        // Get access to the database
         final SQLiteDatabase db = mFavoriteMoviesDBHelper.getWritableDatabase();
 
         int match = sUriMatcher.match(uri);
-        // Keep track of the number of deleted tasks
-        int tasksDeleted; // starts as 0
 
-        // Write the code to delete a single row of data
-        // [Hint] Use selections to delete an item by its row ID
+        // Keep track of the number of deleted movies
+        int moviesDeleted;
+
         switch (match) {
-            // Handle the single item case, recognized by the ID included in the URI path
             case FAVORITE_MOVIES:
-                tasksDeleted = db.delete(MoviesContract.MovieEntry.FAVORITE_TABLE_NAME, null, null);
+                moviesDeleted = db.delete(MoviesContract.MovieEntry.FAVORITE_TABLE_NAME, null, null);
                 break;
             case TOP_RATED_MOVIES:
-                tasksDeleted = db.delete(MoviesContract.MovieEntry.TOP_RATED_TABLE_NAME, null, null);
+                moviesDeleted = db.delete(MoviesContract.MovieEntry.TOP_RATED_TABLE_NAME, null, null);
                 break;
             case MOST_POPULAR_MOVIES:
-                tasksDeleted = db.delete(MoviesContract.MovieEntry.MOST_POPULAR_TABLE_NAME, null, null);
+                moviesDeleted = db.delete(MoviesContract.MovieEntry.MOST_POPULAR_TABLE_NAME, null, null);
                 break;
             case FAVORITE_MOVIE_WITH_ID:
-                // Get the task ID from the URI path
+                // Get the movie ID from the URI path
                 String id = uri.getPathSegments().get(1);
                 // Use selections/selectionArgs to filter for this ID
-                tasksDeleted = db.delete(MoviesContract.MovieEntry.FAVORITE_TABLE_NAME, "_id=?", new String[]{id});
+                moviesDeleted = db.delete(MoviesContract.MovieEntry.FAVORITE_TABLE_NAME, "_id=?", new String[]{id});
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
 
         // Notify the resolver of a change and return the number of items deleted
-        if (tasksDeleted != 0) {
-            // A task was deleted, set notification
+        if (moviesDeleted != 0) {
             getContext().getContentResolver().notifyChange(uri, null);
         }
 
-        // Return the number of tasks deleted
-        return tasksDeleted;
+        // Return the number of movies deleted
+        return moviesDeleted;
 	}
 
 	@Override
 	public int update(@NonNull Uri uri, ContentValues contentValues, String selection, String[] selectionArgs){
         //Keep track of if an update occurs
-        int tasksUpdated;
+        int moviesUpdated;
 
-        // match code
         int match = sUriMatcher.match(uri);
 
         switch (match) {
             case FAVORITE_MOVIE_WITH_ID:
-                //update a single task by getting the id
+                // Update a single movie by getting the id
                 String id = uri.getPathSegments().get(1);
-                //using selections
-                tasksUpdated = mFavoriteMoviesDBHelper.getWritableDatabase().update(MoviesContract.MovieEntry.FAVORITE_TABLE_NAME, contentValues, "_id=?", new String[]{id});
+                // Using selections
+                moviesUpdated = mFavoriteMoviesDBHelper.getWritableDatabase().update(MoviesContract.MovieEntry.FAVORITE_TABLE_NAME, contentValues, "_id=?", new String[]{id});
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
 
-        if (tasksUpdated != 0) {
-            //set notifications if a task was updated
+        if (moviesUpdated != 0) {
+            // Set notifications if a movie was updated
             getContext().getContentResolver().notifyChange(uri, null);
         }
 
-        // return number of tasks updated
-        return tasksUpdated;
+        // Return number of movies updated
+        return moviesUpdated;
 	}
 
 }

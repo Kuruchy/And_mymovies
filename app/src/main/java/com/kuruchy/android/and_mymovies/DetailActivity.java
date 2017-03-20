@@ -31,6 +31,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RatingBar;
@@ -58,11 +59,15 @@ public class DetailActivity extends AppCompatActivity {
     private TextView mVoteAverageNum;
     private RatingBar mVoteAverageStar;
 
+    private Button mShowReviews;
+    private TextView mMovieReviews;
+
     private ImageButton mPlayTrailer;
 
     private FloatingActionButton mFAB;
 
     public static String mTrailer;
+    public static String mReviews;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +84,10 @@ public class DetailActivity extends AppCompatActivity {
         mVoteAverageNum = (TextView) findViewById(R.id.tv_vote_average);
         mVoteAverageStar = (RatingBar) findViewById(R.id.rb_vote_average);
 
+        mShowReviews = (Button) findViewById(R.id.b_reviews);
+        mMovieReviews = (TextView) findViewById(R.id.tv_reviews);
+        mMovieReviews.setVisibility(View.INVISIBLE);
+
         mPlayTrailer = (ImageButton) findViewById(R.id.b_trailer);
 
         mFAB = (FloatingActionButton) findViewById(R.id.favorite_action_button);
@@ -90,7 +99,8 @@ public class DetailActivity extends AppCompatActivity {
                 final Movie mMovie = (Movie) intentThatStartedThisActivity.getParcelableExtra("movie_obj");
                 this.setTitle(mMovie.getTitle());
 
-                loadFetchTrailerMovieData(mMovie.getId());
+                loadFetchExtraMovieData(mMovie.getId());
+                loadFetchExtraMovieData(mMovie.getId());
 
                 mOverview.setText(mMovie.getOverview());
                 mOriginalTitle.setText(mMovie.getOriginal_title());
@@ -107,6 +117,16 @@ public class DetailActivity extends AppCompatActivity {
                         .resize(300, 500)
                         .into(mPosterImage);
 
+                mShowReviews.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mMovieReviews.setText(mReviews);
+                        mMovieReviews.setVisibility(View.VISIBLE);
+                        mShowReviews.setText(R.string.reviews_tag);
+                        //mShowReviews.setVisibility(View.INVISIBLE);
+                    }
+                });
+
                 mPlayTrailer.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -118,8 +138,6 @@ public class DetailActivity extends AppCompatActivity {
                 mFAB.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        // When is favorite automatically set vote to max
-                        //mMovie.setVote_user(5.0);
                         saveMovie(mMovie, MoviesContract.MovieEntry.CONTENT_FAVORITE_URI);
                     }
                 });
@@ -130,12 +148,13 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     /**
-     * Calls the Async Task that will fetch the trailer movie data.
+     * Calls the Async Task that will fetch the trailer movie data and the reviews.
      *
      * @param movieId The movie ID to run the Async Task.
      */
-    private void loadFetchTrailerMovieData(Integer movieId) {
+    private void loadFetchExtraMovieData(Integer movieId) {
         new FetchTrailerMovieData().execute(movieId);
+        new FetchReviewMovieData().execute(movieId);
     }
 
     public void openWebPage(String url) {
@@ -164,21 +183,28 @@ public class DetailActivity extends AppCompatActivity {
         contentValues.put(MoviesContract.MovieEntry.COLUMN_GLOBAL_RATING, mMovie.getVote_average());
         contentValues.put(MoviesContract.MovieEntry.COLUMN_RELEASE_DATE, mMovie.getRelease_date().toString());
         contentValues.put(MoviesContract.MovieEntry.COLUMN_TRAILER_PATH, mTrailer);
+        contentValues.put(MoviesContract.MovieEntry.COLUMN_REVIEWS, mReviews);
 
         // Insert the content values via a ContentResolver
         Uri uri = getContentResolver().insert(mUri, contentValues);
 
         // Display the URI that's returned with a Toast
-        // [Hint] Don't forget to call finish() to return to MainActivity after this insert is complete
-        if(uri != null) {
-            Toast.makeText(getBaseContext(), uri.toString(), Toast.LENGTH_LONG).show();
-        }
+        //if(uri != null) {
+        //    Toast.makeText(getBaseContext(), uri.toString(), Toast.LENGTH_LONG).show();
+        //}
 
         // Finish activity (this returns back to MainActivity)
         finish();
 
     }
 
+    public static String getmReview() {
+        return mReviews;
+    }
+
+    public static void setmReview(String mReview) {
+        DetailActivity.mReviews = mReview;
+    }
 
     public String getmTrailer() {
         return mTrailer;

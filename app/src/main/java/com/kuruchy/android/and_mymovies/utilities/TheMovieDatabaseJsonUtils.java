@@ -144,4 +144,42 @@ public final class TheMovieDatabaseJsonUtils {
         return parsedTrailerData;
     }
 
+    /**
+     * This method parses JSON and returns an array of urls for each review
+     *
+     * @param movieReviewListJSONString JSON string returned from server
+     * @return Array of Reviews
+     * @throws JSONException If JSON data cannot be properly parsed
+     */
+    public static String[] getReviewInfoFromJSONData(String movieReviewListJSONString)
+            throws JSONException {
+
+        final String TMD_RESULTS = "results";
+        final String TMD_REVIEW_ID = "id";
+        final String TMD_REVIEW_AUTHOR = "author";
+        final String TMD_REVIEW_CONTENT = "content";
+        final String TMD_REVIEW_URL = "url";
+
+        String[] parsedTrailerData = null;
+
+        JSONObject movieTrailerJson = new JSONObject(movieReviewListJSONString);
+
+        JSONArray movieTrailerArray = movieTrailerJson.getJSONArray(TMD_RESULTS);
+
+        parsedTrailerData = new String[movieTrailerArray.length()];
+
+        for (int i = 0; i < movieTrailerArray.length(); i++) {
+
+            JSONObject movieObject = movieTrailerArray.getJSONObject(i);
+
+            String movieReviewURL = new String();
+
+            movieReviewURL = movieObject.getString(TMD_REVIEW_CONTENT);
+
+
+            parsedTrailerData[i] = movieReviewURL;
+        }
+
+        return parsedTrailerData;
+    }
 }

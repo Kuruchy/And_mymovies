@@ -28,7 +28,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -103,8 +102,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
                 .error(R.drawable.error)
                 .resize(300, 500)
                 .into(movieAdapterViewHolder.mMovieImageView);
-
-        //Log.v("LOG:", mCursor.getString(mCursor.getColumnIndex(MoviesContract.MovieEntry.COLUMN_POSTER_PATH)));
     }
 
     @Override
@@ -114,12 +111,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     }
 
     /**
-     * Swaps the cursor used by the ForecastAdapter for its weather data. This method is called by
-     * MainActivity after a load has finished, as well as when the Loader responsible for loading
-     * the weather data is reset. When this method is called, we assume we have a completely new
-     * set of data, so we call notifyDataSetChanged to tell the RecyclerView to update.
+     * Method to swap the cursor
      *
-     * @param newCursor the new cursor to use as ForecastAdapter's data source
+     * @param newCursor the new cursor to use as MovieAdapter's data source
      */
     void swapCursor(Cursor newCursor) {
         mCursor = newCursor;

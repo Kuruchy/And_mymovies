@@ -24,12 +24,9 @@
 
 package com.kuruchy.android.and_mymovies.data;
 
-import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
-import com.kuruchy.android.and_mymovies.Movie;
 import com.kuruchy.android.and_mymovies.utilities.TheMovieDatabaseNetworkUtils;
 
 /*
@@ -47,7 +44,7 @@ public class MoviesContract {
         public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
 
         // Define the possible paths for accessing data in this contract
-        // This is the path for all the movues directory
+        // This is the path for all the movies directory
         public static final String PATH_FAVORITE_MOVIES = TheMovieDatabaseNetworkUtils.FAVORITE;
         public static final String PATH_TOP_RATED_MOVIES = TheMovieDatabaseNetworkUtils.TOP_RATED;
         public static final String PATH_POPULAR_MOVIES = TheMovieDatabaseNetworkUtils.POPULAR;
@@ -82,5 +79,6 @@ public class MoviesContract {
             public static final String COLUMN_GLOBAL_RATING    = "global_rating";
             public static final String COLUMN_RELEASE_DATE     = "release_date";
             public static final String COLUMN_TRAILER_PATH     = "trailer_path";
+            public static final String COLUMN_REVIEWS          = "reviews";
         }
 }

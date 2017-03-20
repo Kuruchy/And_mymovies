@@ -28,7 +28,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.net.Uri;
 
-import com.kuruchy.android.and_mymovies.DetailActivity;
 import com.kuruchy.android.and_mymovies.Movie;
 import com.kuruchy.android.and_mymovies.data.MoviesContract;
 import com.kuruchy.android.and_mymovies.utilities.TheMovieDatabaseJsonUtils;
@@ -39,12 +38,11 @@ import java.net.URL;
 public class MoviesSyncTask {
 
     /**
-     * Performs the network request for updated weather, parses the JSON from that request, and
-     * inserts the new weather information into our ContentProvider. Will notify the user that new
-     * weather has been loaded if the user hasn't been notified of the weather within the last day
-     * AND they haven't disabled notifications in the preferences screen.
+     * Performs the network request for updated movies, parses the JSON from that request, and
+     * inserts the new movie information into the ContentProvider.
      *
      * @param context Used to access utility methods and the ContentResolver
+     * @param sortingParam Sorting parameter
      */
     synchronized public static void syncMovieData(Context context, String sortingParam) {
 
@@ -82,7 +80,7 @@ public class MoviesSyncTask {
 
                 ContentValues contentValues = new ContentValues();
 
-                // Put the movie id and sinopsys into the ContentValues
+                // Put the movie id and synopsis into the ContentValues
                 contentValues.put(MoviesContract.MovieEntry.COLUMN_MOVIE_TITLE, mMovie.getTitle().toString());
                 contentValues.put(MoviesContract.MovieEntry.COLUMN_MOVIE_ORG_TITLE, mMovie.getOriginal_title().toString());
                 contentValues.put(MoviesContract.MovieEntry.COLUMN_MOVIE_ID, mMovie.getId());
@@ -93,37 +91,32 @@ public class MoviesSyncTask {
                 contentValues.put(MoviesContract.MovieEntry.COLUMN_GLOBAL_RATING, mMovie.getVote_average());
                 contentValues.put(MoviesContract.MovieEntry.COLUMN_RELEASE_DATE, mMovie.getRelease_date().toString());
                 contentValues.put(MoviesContract.MovieEntry.COLUMN_TRAILER_PATH, "www.youtube.com");
+                contentValues.put(MoviesContract.MovieEntry.COLUMN_REVIEWS, "Not reviewed yet.");
 
                 moviesValues[i] = contentValues;
                 i++;
             }
 
-            /*
-             * In cases where our JSON contained an error code, getWeatherContentValuesFromJson
-             * would have returned null. We need to check for those cases here to prevent any
-             * NullPointerExceptions being thrown. We also have no reason to insert fresh data if
-             * there isn't any to insert.
-             */
+            // Check for an error in the moviesValues, and only insert data when no error.
             if (moviesValues != null && moviesValues.length != 0) {
-                /* Get a handle on the ContentResolver to delete and insert data */
+
+                // Create Content Resolver
                 ContentResolver movieContentResolver = context.getContentResolver();
 
-                /* Delete old data because we don't need to keep multiple data */
+                // Delete the old data
                 movieContentResolver.delete(
                         mUri,
                         null,
                         null);
 
-                /* Insert our new weather data into Sunshine's ContentProvider */
+                // Insert the new data into ContentProvider
                 movieContentResolver.bulkInsert(
                         mUri,
                         moviesValues);
             }
 
-            /* If the code reaches this point, we have successfully performed our sync */
-
         } catch (Exception e) {
-            /* Server probably invalid */
+            // Server probably invalid
             e.printStackTrace();
         }
     }

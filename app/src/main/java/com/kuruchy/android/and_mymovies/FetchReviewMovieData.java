@@ -32,12 +32,12 @@ import com.kuruchy.android.and_mymovies.utilities.TheMovieDatabaseNetworkUtils;
 import java.net.URL;
 
 /**
- * Fetch Trailer Movie Data Class.
+ * Fetch Review Movie Data Class.
  *
  * Extends from AsyncTask. Allowing to run a movie list update on a background thread,
  * while publishing the results to the UI thread.
  */
-public class FetchTrailerMovieData extends AsyncTask<Integer, Void, String> {
+public class FetchReviewMovieData extends AsyncTask<Integer, Void, String> {
 
     @Override
     protected String doInBackground(Integer... params) {
@@ -46,15 +46,21 @@ public class FetchTrailerMovieData extends AsyncTask<Integer, Void, String> {
             return null;
         }
 
-        URL movieRequestURL = TheMovieDatabaseNetworkUtils.buildMovieTrailerUrl(params[0]);
+        URL movieRequestURL = TheMovieDatabaseNetworkUtils.buildMovieReviewUrl(params[0]);
 
         try {
             String jsonMovieTrailerResponse = TheMovieDatabaseNetworkUtils
                     .getResponseFromHttpUrl(movieRequestURL);
 
-            String[] trailerUrlArray = TheMovieDatabaseJsonUtils.getVideoInfoFromJSONData(jsonMovieTrailerResponse);
+            String[] reviewsArray = TheMovieDatabaseJsonUtils.getReviewInfoFromJSONData(jsonMovieTrailerResponse);
 
-            return trailerUrlArray[0];
+            String review = "";
+
+            for (int i=0; i<reviewsArray.length; i++){
+                review += reviewsArray[i] + "\n";
+            }
+
+            return review;
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -65,7 +71,7 @@ public class FetchTrailerMovieData extends AsyncTask<Integer, Void, String> {
     @Override
     protected void onPostExecute(String movieData) {
         if (movieData != null) {
-            DetailActivity.setmTrailer(movieData);
+            DetailActivity.setmReview(movieData);
         }
     }
 }
