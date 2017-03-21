@@ -24,8 +24,11 @@
 
 package com.kuruchy.android.and_mymovies;
 
+import android.net.Uri;
 import android.os.AsyncTask;
 
+import com.kuruchy.android.and_mymovies.data.MoviesContentProvider;
+import com.kuruchy.android.and_mymovies.data.MoviesDBHelper;
 import com.kuruchy.android.and_mymovies.utilities.TheMovieDatabaseJsonUtils;
 import com.kuruchy.android.and_mymovies.utilities.TheMovieDatabaseNetworkUtils;
 

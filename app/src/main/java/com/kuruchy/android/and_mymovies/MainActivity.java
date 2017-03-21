@@ -29,21 +29,18 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.content.res.Configuration;
-import android.os.Parcelable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.kuruchy.android.and_mymovies.data.MoviesContract;
-import com.kuruchy.android.and_mymovies.data.MoviesDBHelper;
 import com.kuruchy.android.and_mymovies.sync.MoviesSyncUtils;
 import com.kuruchy.android.and_mymovies.utilities.TheMovieDatabaseNetworkUtils;
 
@@ -55,6 +52,9 @@ import com.kuruchy.android.and_mymovies.utilities.TheMovieDatabaseNetworkUtils;
 public class MainActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor>,
         MovieAdapter.MovieAdapterOnClickHandler {
+
+    // A constant to save and restore the sorting method that is being used
+    private static final String SORTING_PARAM_EXTRA = "sorting_param";
 
     // The columns of data that we are interested in displaying within our MainActivity's list of
     // movie data.
@@ -86,7 +86,8 @@ public class MainActivity extends AppCompatActivity implements
 
     private RecyclerView mRecyclerView;
     private static MovieAdapter mMovieAdapter;
-    private int NUMBER_OF_COLUMNS = 4;
+
+    private EndlessRecyclerViewScrollListener scrollListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,14 +99,8 @@ public class MainActivity extends AppCompatActivity implements
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_movie);
 
-        MoviesDBHelper dbHelper = new MoviesDBHelper(this);
-
-        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
-            NUMBER_OF_COLUMNS = 6;
-        }
-
         GridLayoutManager gridLayoutManager
-                = new GridLayoutManager(this, NUMBER_OF_COLUMNS);
+                = new GridLayoutManager(this, calculateNoOfColumns(this));
 
         mRecyclerView.setLayoutManager(gridLayoutManager);
 
@@ -115,12 +110,38 @@ public class MainActivity extends AppCompatActivity implements
 
         mRecyclerView.setAdapter(mMovieAdapter);
 
-        // Creates a Loader if one doesn't already exist, and starts it. Otherwise
-        // the last created loader is re-used.
-        getSupportLoaderManager().initLoader(ID_TOP_RATED_MOVIE_LOADER, null, this);
+        // If a savedInstanceState exist load the sorting param from there, if not use top rated
+        if (savedInstanceState != null) {
+            int sortingParam = savedInstanceState.getInt(SORTING_PARAM_EXTRA);
+
+            // Creates a Loader if one doesn't already exist, and starts it. Otherwise
+            // the last created loader is re-used.
+            getSupportLoaderManager().initLoader(sortingParam, null, this);
+        }else {
+            getSupportLoaderManager().initLoader(ID_TOP_RATED_MOVIE_LOADER, null, this);
+        }
+
+        //TODO use the scrollListener to show more pages
+        scrollListener = new EndlessRecyclerViewScrollListener(gridLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                // Load next page of movies
+                TheMovieDatabaseNetworkUtils.page = page;
+            }
+        };
+        mRecyclerView.addOnScrollListener(scrollListener);
 
         // Starts the Sync task MoviesSyncIntentService
         MoviesSyncUtils.startImmediateSync(this);
+    }
+
+    // Returns the number of columns due to the display
+    public static int calculateNoOfColumns(Context context) {
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
+        int scalingFactor = 100;
+        int noOfColumns = (int) (dpWidth / scalingFactor);
+        return noOfColumns;
     }
 
     @Override
@@ -184,8 +205,8 @@ public class MainActivity extends AppCompatActivity implements
         Context context = this;
         Class destinationClass = DetailActivity.class;
         Intent intentToStartDetailActivity = new Intent(context, destinationClass);
-        //Log.v("DEBUG", movie.getTitle());
-        intentToStartDetailActivity.putExtra("movie_obj", (Parcelable) movie);
+        DetailActivity.loadFetchTrailerMovieData(movie.getId());
+        intentToStartDetailActivity.putExtra("movie_obj", movie);
         startActivity(intentToStartDetailActivity);
     }
 
@@ -229,7 +250,19 @@ public class MainActivity extends AppCompatActivity implements
         return super.onOptionsItemSelected(item);
     }
 
-    public static MovieAdapter getmMovieAdapter() {
-        return mMovieAdapter;
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        int sortingParam;
+        if(TheMovieDatabaseNetworkUtils.SORTING_PARAM == TheMovieDatabaseNetworkUtils.FAVORITE){
+            sortingParam = ID_FAVORITE_MOVIE_LOADER;
+        }else if (TheMovieDatabaseNetworkUtils.SORTING_PARAM == TheMovieDatabaseNetworkUtils.TOP_RATED){
+            sortingParam = ID_TOP_RATED_MOVIE_LOADER;
+        }else {
+            sortingParam = ID_POPULAR_MOVIE_LOADER;
+        }
+
+        outState.putInt(SORTING_PARAM_EXTRA, sortingParam);
     }
+
 }

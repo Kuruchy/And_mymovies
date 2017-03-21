@@ -56,8 +56,6 @@ public class Movie implements Parcelable {
     private String trailer_path;
     private Double vote_user;
 
-    private Cursor mCursor;
-
     public Movie() {
 
     }

@@ -36,10 +36,12 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.kuruchy.android.and_mymovies.data.MoviesContract;
+import com.kuruchy.android.and_mymovies.utilities.TheMovieDatabaseNetworkUtils;
 import com.squareup.picasso.Picasso;
+
+import java.net.MalformedURLException;
 
 /**
  * Detail Activity Class.
@@ -62,6 +64,7 @@ public class DetailActivity extends AppCompatActivity {
     private Button mShowReviews;
     private TextView mMovieReviews;
 
+    private ImageView mTrailerThumb;
     private ImageButton mPlayTrailer;
 
     private FloatingActionButton mFAB;
@@ -88,6 +91,7 @@ public class DetailActivity extends AppCompatActivity {
         mMovieReviews = (TextView) findViewById(R.id.tv_reviews);
         mMovieReviews.setVisibility(View.INVISIBLE);
 
+        mTrailerThumb = (ImageView) findViewById(R.id.iv_trailer);
         mPlayTrailer = (ImageButton) findViewById(R.id.b_trailer);
 
         mFAB = (FloatingActionButton) findViewById(R.id.favorite_action_button);
@@ -96,11 +100,11 @@ public class DetailActivity extends AppCompatActivity {
 
         if (intentThatStartedThisActivity != null) {
             if (intentThatStartedThisActivity.hasExtra("movie_obj")) {
-                final Movie mMovie = (Movie) intentThatStartedThisActivity.getParcelableExtra("movie_obj");
+                final Movie mMovie = intentThatStartedThisActivity.getParcelableExtra("movie_obj");
                 this.setTitle(mMovie.getTitle());
 
-                loadFetchExtraMovieData(mMovie.getId());
-                loadFetchExtraMovieData(mMovie.getId());
+                loadFetchTrailerMovieData(mMovie.getId());
+                loadFetchReviewMovieData(mMovie.getId());
 
                 mOverview.setText(mMovie.getOverview());
                 mOriginalTitle.setText(mMovie.getOriginal_title());
@@ -109,6 +113,8 @@ public class DetailActivity extends AppCompatActivity {
 
                 mVoteAverageNum.setText((mMovie.getVote_average() / 2) + " / " + mMovie.getVote_count() + " votes");
                 mVoteAverageStar.setRating(mMovie.getVote_average().floatValue() / 2);
+
+                reloadTrailerThumb();
 
                 Picasso.with(this.getBaseContext())
                         .load(mMovie.getPoster_path())
@@ -147,13 +153,38 @@ public class DetailActivity extends AppCompatActivity {
         }
     }
 
+    private void reloadTrailerThumb() {
+        String trailerId = null;
+
+        try {
+            trailerId = TheMovieDatabaseNetworkUtils.extractYoutubeId(mTrailer);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        String img_url="http://img.youtube.com/vi/" + trailerId + "/0.jpg";
+
+        Picasso.with(this.getBaseContext())
+                .load(img_url)
+                .placeholder(R.drawable.placeholder)
+                .into(mTrailerThumb);
+    }
+
     /**
      * Calls the Async Task that will fetch the trailer movie data and the reviews.
      *
      * @param movieId The movie ID to run the Async Task.
      */
-    private void loadFetchExtraMovieData(Integer movieId) {
+    public static void loadFetchTrailerMovieData(Integer movieId) {
         new FetchTrailerMovieData().execute(movieId);
+    }
+
+    /**
+     * Calls the Async Task that will fetch the reviews.
+     *
+     * @param movieId The movie ID to run the Async Task.
+     */
+    public static void loadFetchReviewMovieData(Integer movieId) {
         new FetchReviewMovieData().execute(movieId);
     }
 

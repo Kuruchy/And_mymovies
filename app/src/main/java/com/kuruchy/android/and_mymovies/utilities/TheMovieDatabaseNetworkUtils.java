@@ -51,7 +51,7 @@ public final class TheMovieDatabaseNetworkUtils {
     public static final String MOVIES_TRAILER_YOUTUBE_BASE_URL = "https://www.youtube.com/watch?v=";
 
     private static final String language = "en-US";
-    private static final String page = "1";
+    public static int page = 1;
 
     private static String api_key;
 
@@ -74,7 +74,7 @@ public final class TheMovieDatabaseNetworkUtils {
         Uri builtUri = Uri.parse(MOVIES_BASE_URL + sortingParam + QUERY_PARAM).buildUpon()
                 .appendQueryParameter(API_KEY_PARAM, api_key)
                 .appendQueryParameter(LANGUAGE_PARAM, language)
-                .appendQueryParameter(PAGE_PARAM, page)
+                .appendQueryParameter(PAGE_PARAM, ""+page)
                 .build();
 
         URL url = null;
@@ -156,5 +156,18 @@ public final class TheMovieDatabaseNetworkUtils {
 
     public static void setApi_key(String api_key) {
         TheMovieDatabaseNetworkUtils.api_key = api_key;
+    }
+
+    public static String extractYoutubeId(String url) throws MalformedURLException {
+        String query = new URL(url).getQuery();
+        String[] param = query.split("&");
+        String id = null;
+        for (String row : param) {
+            String[] param1 = row.split("=");
+            if (param1[0].equals("v")) {
+                id = param1[1];
+            }
+        }
+        return id;
     }
 }
