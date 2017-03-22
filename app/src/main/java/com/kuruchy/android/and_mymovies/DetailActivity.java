@@ -26,6 +26,7 @@ package com.kuruchy.android.and_mymovies;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -36,6 +37,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.kuruchy.android.and_mymovies.data.MoviesContract;
 import com.kuruchy.android.and_mymovies.utilities.TheMovieDatabaseNetworkUtils;
@@ -129,14 +131,12 @@ public class DetailActivity extends AppCompatActivity {
                         mMovieReviews.setText(mReviews);
                         mMovieReviews.setVisibility(View.VISIBLE);
                         mShowReviews.setText(R.string.reviews_tag);
-                        //mShowReviews.setVisibility(View.INVISIBLE);
                     }
                 });
 
                 mPlayTrailer.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        //openWebPage(mMovie.getTrailer_path());
                         openWebPage(mTrailer);
                     }
                 });
@@ -144,7 +144,12 @@ public class DetailActivity extends AppCompatActivity {
                 mFAB.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        saveMovie(mMovie, MoviesContract.MovieEntry.CONTENT_FAVORITE_URI);
+                        int movieId = mMovie.getId();
+                        if(!movieInDatabase(movieId)){
+                            saveMovie(mMovie, MoviesContract.MovieEntry.CONTENT_FAVORITE_URI);
+                        }else{
+                            Toast.makeText(getBaseContext(), "Already in Favorites!", Toast.LENGTH_LONG).show();
+                        }
                     }
                 });
 
@@ -196,7 +201,19 @@ public class DetailActivity extends AppCompatActivity {
         }
     }
 
-    //TODO fix save data to send all data to content resolver
+    // Check if the movie is in Content Provider
+    public boolean movieInDatabase(int movieId){
+        Cursor cursor = getContentResolver().query(MoviesContract.MovieEntry.CONTENT_FAVORITE_URI, null, null, null, null);
+
+        while (cursor.moveToNext()){
+            if (movieId == cursor.getInt(cursor.getColumnIndex(MoviesContract.MovieEntry.COLUMN_MOVIE_ID))){
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    // Save data in Content Provider
     public void saveMovie(Movie mMovie, Uri mUri){
 
         // Insert new task data via a ContentResolver
