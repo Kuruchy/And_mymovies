@@ -34,5 +34,8 @@
     <dimen name="detail_activity_overview_padding">12dp</dimen>
     <dimen name="detail_activity_image_top_margin">16dp</dimen>
     <dimen name="detail_activity_image_low_margin">8dp</dimen>
+    <dimen name="app_bar_height">180dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="text_margin">16dp</dimen>
 
 </resources>

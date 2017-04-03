@@ -69,16 +69,17 @@ public class MoviesContract {
             // Since TaskEntry implements the interface "BaseColumns", it has an automatically produced
             // "_ID" column in addition to the two below
             // Columns within the database table
-            public static final String COLUMN_MOVIE_TITLE      = "movie_title";
-            public static final String COLUMN_MOVIE_ORG_TITLE  = "movie_org_title";
-            public static final String COLUMN_MOVIE_ID         = "movie_id";
-            public static final String COLUMN_POSTER_PATH      = "poster_path";
-            //public static final String COLUMN_POSTER_PIC     = "poster_pic";
-            public static final String COLUMN_SYNOPSIS         = "synopsis";
-            public static final String COLUMN_USER_RATING      = "user_rating";
-            public static final String COLUMN_GLOBAL_RATING    = "global_rating";
-            public static final String COLUMN_RELEASE_DATE     = "release_date";
-            public static final String COLUMN_TRAILER_PATH     = "trailer_path";
-            public static final String COLUMN_REVIEWS          = "reviews";
+            public static final String COLUMN_MOVIE_TITLE            = "movie_title";
+            public static final String COLUMN_MOVIE_ORG_TITLE        = "movie_org_title";
+            public static final String COLUMN_MOVIE_ID               = "movie_id";
+            public static final String COLUMN_POSTER_PATH            = "poster_path";
+            public static final String COLUMN_SYNOPSIS               = "synopsis";
+            public static final String COLUMN_USER_RATING            = "user_rating";
+            public static final String COLUMN_GLOBAL_RATING          = "global_rating";
+            public static final String COLUMN_RELEASE_DATE           = "release_date";
+            public static final String COLUMN_TRAILER_PATH           = "trailer_path";
+            public static final String COLUMN_REVIEWS                = "reviews";
+            public static final String COLUMN_BACKDROP_PATH          = "backdrop_path";
+            public static final String COLUMN_TRAILER_THUMBNAIL_PATH = "trailer_thumbnail";
         }
 }

@@ -40,7 +40,7 @@ public class MoviesDBHelper extends SQLiteOpenHelper {
 
 	// Name & version of the Database
 	private static final String DATABASE_NAME = "movies.db";
-	private static final int DATABASE_VERSION = 5;
+	private static final int DATABASE_VERSION = 7;
 
 	public MoviesDBHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -63,8 +63,6 @@ public class MoviesDBHelper extends SQLiteOpenHelper {
                     " INTEGER NOT NULL, " +
                     MoviesContract.MovieEntry.COLUMN_POSTER_PATH +
                     " TEXT NOT NULL, " +
-                    //MoviesContract.MovieEntry.COLUMN_POSTER_PIC +
-                    //" TEXT NOT NULL, " +
                     MoviesContract.MovieEntry.COLUMN_SYNOPSIS +
                     " TEXT NOT NULL, " +
                     MoviesContract.MovieEntry.COLUMN_USER_RATING +
@@ -74,6 +72,10 @@ public class MoviesDBHelper extends SQLiteOpenHelper {
                     MoviesContract.MovieEntry.COLUMN_RELEASE_DATE +
                     " TEXT NOT NULL, " +
 					MoviesContract.MovieEntry.COLUMN_TRAILER_PATH +
+					" TEXT NOT NULL, " +
+					MoviesContract.MovieEntry.COLUMN_TRAILER_THUMBNAIL_PATH +
+					" TEXT NOT NULL, " +
+					MoviesContract.MovieEntry.COLUMN_BACKDROP_PATH +
 					" TEXT NOT NULL, " +
 			        MoviesContract.MovieEntry.COLUMN_REVIEWS +
 					" TEXT NOT NULL);";

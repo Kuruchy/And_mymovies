@@ -39,6 +39,7 @@ import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.kuruchy.android.and_mymovies.data.MoviesContract;
 import com.kuruchy.android.and_mymovies.sync.MoviesSyncUtils;
@@ -69,6 +70,8 @@ public class MainActivity extends AppCompatActivity implements
             MoviesContract.MovieEntry.COLUMN_GLOBAL_RATING,
             MoviesContract.MovieEntry.COLUMN_GLOBAL_RATING,
             MoviesContract.MovieEntry.COLUMN_TRAILER_PATH,
+            MoviesContract.MovieEntry.COLUMN_TRAILER_THUMBNAIL_PATH,
+            MoviesContract.MovieEntry.COLUMN_BACKDROP_PATH,
             MoviesContract.MovieEntry.COLUMN_REVIEWS
     };
 
@@ -86,8 +89,6 @@ public class MainActivity extends AppCompatActivity implements
 
     private RecyclerView mRecyclerView;
     private static MovieAdapter mMovieAdapter;
-
-    private EndlessRecyclerViewScrollListener scrollListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,18 +122,29 @@ public class MainActivity extends AppCompatActivity implements
             getSupportLoaderManager().initLoader(ID_TOP_RATED_MOVIE_LOADER, null, this);
         }
 
-        //TODO use the scrollListener to show more pages
-        scrollListener = new EndlessRecyclerViewScrollListener(gridLayoutManager) {
+        EndlessRecyclerViewScrollListener scrollListener = new EndlessRecyclerViewScrollListener(gridLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                // Load next page of movies
-                TheMovieDatabaseNetworkUtils.page = page;
+                loadNextDataFromApi(page);
             }
         };
+
         mRecyclerView.addOnScrollListener(scrollListener);
 
         // Starts the Sync task MoviesSyncIntentService
         MoviesSyncUtils.startImmediateSync(this);
+    }
+
+    // Append the next page of data into the adapter
+    // This method probably sends out a network request and appends new data items to your adapter.
+    public void loadNextDataFromApi(int offset) {
+        // Send an API request to retrieve appropriate paginated data
+        //  --> Send the request including an offset value (i.e `page`) as a query parameter.
+        //  --> Deserialize and construct new model objects from the API response
+        //  --> Append the new data objects to the existing set of items inside the array of items
+        //  --> Notify the adapter of the new items made with `notifyDataSetChanged()
+        Toast.makeText(getBaseContext(), "Loading More " + offset, Toast.LENGTH_LONG).show();
+
     }
 
     // Returns the number of columns due to the display
@@ -141,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements
         float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
         int scalingFactor = 100;
         int noOfColumns = (int) (dpWidth / scalingFactor);
-        return noOfColumns;
+        return noOfColumns>=2?noOfColumns:2;
     }
 
     @Override
@@ -205,7 +217,6 @@ public class MainActivity extends AppCompatActivity implements
         Context context = this;
         Class destinationClass = DetailActivity.class;
         Intent intentToStartDetailActivity = new Intent(context, destinationClass);
-        DetailActivity.loadFetchTrailerMovieData(movie.getId());
         intentToStartDetailActivity.putExtra("movie_obj", movie);
         startActivity(intentToStartDetailActivity);
     }

@@ -47,7 +47,8 @@ public final class TheMovieDatabaseNetworkUtils {
 
     private static final String QUALITY = W185;
     private static final String MOVIES_BASE_URL = "https://api.themoviedb.org/3/movie/";
-    public static final String MOVIES_PICS_BASE_URL = "https://image.tmdb.org/t/p/" + QUALITY;
+    public static final String MOVIES_POSTER_BASE_URL = "https://image.tmdb.org/t/p/" + QUALITY;
+    public static final String MOVIES_BACKDROP_BASE_URL = "https://image.tmdb.org/t/p/" + W500;
     public static final String MOVIES_TRAILER_YOUTUBE_BASE_URL = "https://www.youtube.com/watch?v=";
 
     private static final String language = "en-US";

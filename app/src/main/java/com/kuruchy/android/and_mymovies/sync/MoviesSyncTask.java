@@ -91,6 +91,8 @@ public class MoviesSyncTask {
                 contentValues.put(MoviesContract.MovieEntry.COLUMN_GLOBAL_RATING, mMovie.getVote_average());
                 contentValues.put(MoviesContract.MovieEntry.COLUMN_RELEASE_DATE, mMovie.getRelease_date().toString());
                 contentValues.put(MoviesContract.MovieEntry.COLUMN_TRAILER_PATH, "www.youtube.com");
+                contentValues.put(MoviesContract.MovieEntry.COLUMN_TRAILER_THUMBNAIL_PATH, "www.youtube.com");
+                contentValues.put(MoviesContract.MovieEntry.COLUMN_BACKDROP_PATH, mMovie.getBackdrop_path().toString());
                 contentValues.put(MoviesContract.MovieEntry.COLUMN_REVIEWS, "Not reviewed yet.");
 
                 moviesValues[i] = contentValues;

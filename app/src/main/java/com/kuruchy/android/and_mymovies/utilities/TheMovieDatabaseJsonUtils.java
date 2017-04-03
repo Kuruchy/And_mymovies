@@ -79,7 +79,7 @@ public final class TheMovieDatabaseJsonUtils {
 
             Movie movie = new Movie();
 
-            movie.setPoster_path(TheMovieDatabaseNetworkUtils.MOVIES_PICS_BASE_URL + movieObject.getString(TMD_POSTER_PATH));
+            movie.setPoster_path(TheMovieDatabaseNetworkUtils.MOVIES_POSTER_BASE_URL + movieObject.getString(TMD_POSTER_PATH));
             movie.setAdult(movieObject.getBoolean(TMD_ADULT));
             movie.setOverview(movieObject.getString(TMD_OVERVIEW));
             movie.setRelease_date(movieObject.getString(TMD_RELEASE_DATE));
@@ -88,7 +88,9 @@ public final class TheMovieDatabaseJsonUtils {
             movie.setOriginal_title(movieObject.getString(TMD_ORIGINAL_TITLE));
             movie.setOriginal_language(movieObject.getString(TMD_ORIGINAL_LANGUAGE));
             movie.setTitle(movieObject.getString(TMD_TITLE));
-            movie.setBackdrop_path(movieObject.getString(TMD_BACKDROP_PATH));
+            movie.setBackdrop_path(TheMovieDatabaseNetworkUtils.MOVIES_BACKDROP_BASE_URL + movieObject.getString(TMD_BACKDROP_PATH));
+            movie.setTrailer_path("path");
+            movie.setTrailer_thumbnail_path("thumb");
             movie.setPopularity(movieObject.getDouble(TMD_POPULARITY));
             movie.setVote_count(movieObject.getInt(TMD_VOTE_COUNT));
             movie.setVideo(movieObject.getBoolean(TMD_VIDEO));

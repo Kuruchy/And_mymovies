@@ -44,7 +44,6 @@ public class Movie implements Parcelable {
     private String original_title;
     private String original_language;
     private String title;
-    private String backdrop_path;
     private int id;
     private int vote_count;
     private Double vote_average;
@@ -54,7 +53,11 @@ public class Movie implements Parcelable {
     private int[] genre_ids;
 
     private String trailer_path;
+    private String trailer_thumbnail_path;
+    private String backdrop_path;
     private Double vote_user;
+
+    private String reviews;
 
     public Movie() {
 
@@ -67,12 +70,14 @@ public class Movie implements Parcelable {
         this.original_title = mCursor.getString(mCursor.getColumnIndex(MoviesContract.MovieEntry.COLUMN_MOVIE_ORG_TITLE));
         this.original_language = "ELFIC";
         this.title = mCursor.getString(mCursor.getColumnIndex(MoviesContract.MovieEntry.COLUMN_MOVIE_TITLE));
-        this.backdrop_path = "";
         this.id = mCursor.getInt(mCursor.getColumnIndex(MoviesContract.MovieEntry.COLUMN_MOVIE_ID));
         this.vote_count = mCursor.getInt(mCursor.getColumnIndex(MoviesContract.MovieEntry.COLUMN_USER_RATING));
         this.vote_average = mCursor.getDouble(mCursor.getColumnIndex(MoviesContract.MovieEntry.COLUMN_GLOBAL_RATING));
         this.popularity = mCursor.getDouble(mCursor.getColumnIndex(MoviesContract.MovieEntry.COLUMN_GLOBAL_RATING));
         this.trailer_path = mCursor.getString(mCursor.getColumnIndex(MoviesContract.MovieEntry.COLUMN_TRAILER_PATH));
+        this.trailer_thumbnail_path = mCursor.getString(mCursor.getColumnIndex(MoviesContract.MovieEntry.COLUMN_TRAILER_THUMBNAIL_PATH));
+        this.backdrop_path = mCursor.getString(mCursor.getColumnIndex(MoviesContract.MovieEntry.COLUMN_BACKDROP_PATH));
+        this.reviews = mCursor.getString(mCursor.getColumnIndex(MoviesContract.MovieEntry.COLUMN_REVIEWS));
         //this.vote_user = mCursor.getInt(mCursor.getColumnIndex(MoviesContract.MovieEntry.COLUMN_USER_RATING));
     }
 
@@ -89,12 +94,14 @@ public class Movie implements Parcelable {
         out.writeString(original_title);
         out.writeString(original_language);
         out.writeString(title);
-        out.writeString(backdrop_path);
         out.writeInt(id);
         out.writeInt(vote_count);
         out.writeDouble(vote_average);
         out.writeDouble(popularity);
         out.writeString(trailer_path);
+        out.writeString(trailer_thumbnail_path);
+        out.writeString(backdrop_path);
+        out.writeString(reviews);
         //out.writeDouble(vote_user);
     }
 
@@ -105,12 +112,14 @@ public class Movie implements Parcelable {
         original_title = in.readString();
         original_language = in.readString();
         title = in.readString();
-        backdrop_path = in.readString();
         id = in.readInt();
         vote_count = in.readInt();
         vote_average = in.readDouble();
         popularity = in.readDouble();
+        trailer_thumbnail_path = in.readString();
         trailer_path = in.readString();
+        backdrop_path = in.readString();
+        reviews = in.readString();
         //vote_user = in.readDouble();
     }
 
@@ -257,4 +266,19 @@ public class Movie implements Parcelable {
         this.vote_user = vote_user;
     }
 
+    public String getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(String reviews) {
+        this.reviews = reviews;
+    }
+
+    public String getTrailer_thumbnail_path() {
+        return trailer_thumbnail_path;
+    }
+
+    public void setTrailer_thumbnail_path(String trailer_thumbnail_path) {
+        this.trailer_thumbnail_path = trailer_thumbnail_path;
+    }
 }
