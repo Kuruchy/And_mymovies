@@ -29,12 +29,17 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -52,7 +57,8 @@ import com.kuruchy.android.and_mymovies.utilities.TheMovieDatabaseNetworkUtils;
  */
 public class MainActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor>,
-        MovieAdapter.MovieAdapterOnClickHandler {
+        MovieAdapter.MovieAdapterOnClickHandler,
+        NavigationView.OnNavigationItemSelectedListener {
 
     // A constant to save and restore the sorting method that is being used
     private static final String SORTING_PARAM_EXTRA = "sorting_param";
@@ -110,6 +116,21 @@ public class MainActivity extends AppCompatActivity implements
         mMovieAdapter = new MovieAdapter(this, this);
 
         mRecyclerView.setAdapter(mMovieAdapter);
+
+        // Menus and Toolbars
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
 
         // If a savedInstanceState exist load the sorting param from there, if not use top rated
         if (savedInstanceState != null) {
@@ -220,47 +241,7 @@ public class MainActivity extends AppCompatActivity implements
         intentToStartDetailActivity.putExtra("movie_obj", movie);
         startActivity(intentToStartDetailActivity);
     }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        switch (id) {
-
-            case R.id.sort_by_popular:
-                TheMovieDatabaseNetworkUtils.SORTING_PARAM = TheMovieDatabaseNetworkUtils.POPULAR;
-                mMovieAdapter = new MovieAdapter(this, this);
-                mRecyclerView.setAdapter(mMovieAdapter);
-                MoviesSyncUtils.startImmediateSync(this);
-                getSupportLoaderManager().restartLoader(ID_POPULAR_MOVIE_LOADER, null, this);
-                return true;
-
-            case R.id.sort_by_top:
-                TheMovieDatabaseNetworkUtils.SORTING_PARAM = TheMovieDatabaseNetworkUtils.TOP_RATED;
-                mMovieAdapter = new MovieAdapter(this, this);
-                mRecyclerView.setAdapter(mMovieAdapter);
-                MoviesSyncUtils.startImmediateSync(this);
-                getSupportLoaderManager().restartLoader(ID_TOP_RATED_MOVIE_LOADER, null, this);
-                return true;
-
-            case R.id.sort_by_favorite:
-                TheMovieDatabaseNetworkUtils.SORTING_PARAM = TheMovieDatabaseNetworkUtils.FAVORITE;
-                mMovieAdapter = new MovieAdapter(this, this);
-                mRecyclerView.setAdapter(mMovieAdapter);
-                getSupportLoaderManager().restartLoader(ID_FAVORITE_MOVIE_LOADER, null, this);
-                return true;
-
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
+    
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -276,4 +257,49 @@ public class MainActivity extends AppCompatActivity implements
         outState.putInt(SORTING_PARAM_EXTRA, sortingParam);
     }
 
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.nav_favorite) {
+            TheMovieDatabaseNetworkUtils.SORTING_PARAM = TheMovieDatabaseNetworkUtils.FAVORITE;
+            mMovieAdapter = new MovieAdapter(this, this);
+            mRecyclerView.setAdapter(mMovieAdapter);
+            getSupportLoaderManager().restartLoader(ID_FAVORITE_MOVIE_LOADER, null, this);
+        } else if (id == R.id.nav_top_rated) {
+            TheMovieDatabaseNetworkUtils.SORTING_PARAM = TheMovieDatabaseNetworkUtils.TOP_RATED;
+            mMovieAdapter = new MovieAdapter(this, this);
+            mRecyclerView.setAdapter(mMovieAdapter);
+            MoviesSyncUtils.startImmediateSync(this);
+            getSupportLoaderManager().restartLoader(ID_TOP_RATED_MOVIE_LOADER, null, this);
+        } else if (id == R.id.nav_most_popular) {
+            TheMovieDatabaseNetworkUtils.SORTING_PARAM = TheMovieDatabaseNetworkUtils.POPULAR;
+            mMovieAdapter = new MovieAdapter(this, this);
+            mRecyclerView.setAdapter(mMovieAdapter);
+            MoviesSyncUtils.startImmediateSync(this);
+            getSupportLoaderManager().restartLoader(ID_POPULAR_MOVIE_LOADER, null, this);
+        } else if (id == R.id.nav_manage) {
+
+        } else if (id == R.id.nav_share) {
+
+        } else if (id == R.id.nav_send) {
+
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
 }

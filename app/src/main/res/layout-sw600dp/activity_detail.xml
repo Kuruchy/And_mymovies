@@ -177,7 +177,7 @@
             android:clickable="true"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@+id/b_trailer"
-            app:srcCompat="@drawable/ic_favorite_border_white_24dp" />
+            app:srcCompat="@drawable/ic_thumb_up_white_48px" />
 
         <Button
             android:id="@+id/b_reviews"
